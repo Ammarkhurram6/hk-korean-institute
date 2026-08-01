@@ -21,13 +21,15 @@ const Footer = () => {
             </p>
             <div className="flex gap-4 mt-6">
               <a
-                href="#"
+                href="https://www.facebook.com/people/HK-Institute-of-Languages-Technology/61582253847145/"
+                target="blank"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-kred flex items-center justify-center transition-colors"
               >
                 <FaFacebookF />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/hk_institute_of_languages/"
+                target="blank"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-kred flex items-center justify-center transition-colors"
               >
                 <FaInstagram />
@@ -39,7 +41,7 @@ const Footer = () => {
                 <FaYoutube />
               </a>
               <a
-                href="#"
+                href=""
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-kred flex items-center justify-center transition-colors"
               >
                 <FaLinkedinIn />
