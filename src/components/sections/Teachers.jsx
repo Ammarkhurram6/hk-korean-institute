@@ -8,21 +8,21 @@ const Teachers = () => {
       qual: "M.A. in Korean Linguistics",
       exp: "10+ Years",
       spec: "TOPIK Expert",
-      img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1587&auto=format&fit=crop",
+      // img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1587&auto=format&fit=crop",
     },
     {
       name: "Park Min-ho",
       qual: "B.A. in Education",
       exp: "7+ Years",
       spec: "Spoken Korean",
-      img: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1587&auto=format&fit=crop",
+      // img: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1587&auto=format&fit=crop",
     },
     {
       name: "Lee Eun-ji",
       qual: "PhD Candidate",
       exp: "5+ Years",
       spec: "Beginner Specialist",
-      img: "https://images.unsplash.com/photo-1580489944761-15a4a652dc65?q=80&w=1587&auto=format&fit=crop",
+      // img: "https://images.unsplash.com/photo-1580489944761-15a4a652dc65?q=80&w=1587&auto=format&fit=crop",
     },
   ];
 

@@ -7,25 +7,25 @@ import { motion } from "framer-motion";
 const Testimonials = () => {
   const reviews = [
     {
-      name: "Sarah Chan",
+      name: "Sarah ",
       course: "TOPIK Preparation",
       text: "The teachers are incredibly supportive. I passed TOPIK Level 5 with their guidance!",
       img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1587&auto=format&fit=crop",
     },
     {
-      name: "Jason Lee",
+      name: "Adullah",
       course: "Spoken Korean",
       text: "I can now confidently converse in Korean with my clients. Highly recommend HK Institute.",
       img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1587&auto=format&fit=crop",
     },
     {
-      name: "Emily Wong",
+      name: "Fatima",
       course: "Beginner Korean",
       text: "The classes are fun and interactive. Learning Hangul was never this easy!",
       img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1587&auto=format&fit=crop",
     },
     {
-      name: "Daniel Kim",
+      name: "Awais",
       course: "Advanced Korean",
       text: "Professional environment and excellent curriculum. Best institute in Hong Kong.",
       img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1587&auto=format&fit=crop",
