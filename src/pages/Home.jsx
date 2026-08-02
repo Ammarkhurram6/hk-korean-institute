@@ -3,7 +3,7 @@ import About from "../components/sections/About";
 import Courses from "../components/sections/Courses";
 import WhyLearn from "../components/sections/WhyLearn";
 import Admission from "../components/sections/Admission";
-import Teachers from "../components/sections/Teachers";
+// import Teachers from "../components/sections/Teachers";
 import Stats from "../components/sections/Stats";
 import Testimonials from "../components/sections/Testimonials";
 import Gallery from "../components/sections/Gallery";
@@ -19,7 +19,7 @@ const Home = () => {
       <WhyLearn />
       <Admission />
       <Stats />
-      <Teachers />
+      {/* <Teachers /> */}
       <Testimonials />
       <Gallery />
       <FAQ />

@@ -66,14 +66,7 @@ const Footer = () => {
                   Admission Process
                 </a>
               </li>
-              <li>
-                <a
-                  href="#teachers"
-                  className="hover:text-kred transition-colors"
-                >
-                  Meet Our Teachers
-                </a>
-              </li>
+
               <li>
                 <a href="#faq" className="hover:text-kred transition-colors">
                   FAQ
