@@ -6,7 +6,7 @@ export default {
     extend: {
       colors: {
         navy: "#0a1f44",
-        kred: "#c9963b",
+        kred: "#CD2E3A",
         charcoal: "#1a1a1a",
         lightgray: "#f4f6f9",
       },
