@@ -27,7 +27,7 @@ const Testimonials = () => {
     {
       name: "Awais",
       course: "Advanced Korean",
-      text: "Professional environment and excellent curriculum. Best institute in Hong Kong.",
+      text: "Professional environment and excellent curriculum. Best institute in Lahore.",
       img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1587&auto=format&fit=crop",
     },
   ];
