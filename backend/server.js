@@ -11,19 +11,42 @@ const Contact = require("./models/Contact");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ======================
+// CORS Configuration
+// ======================
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://hk-korean-institute.vercel.app",
+  "https://hk-korean-institute-git-main-ammar-team.vercel.app",
+  "https://www.hkkorean.com",
+  "https://hkkorean.com",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://www.hkkorean.com",
-      "https://hk-korean-institute.vercel.app",
-      "http://localhost:5173",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, mobile apps, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   }),
 );
-app.use(express.json());
 
+app.options("*", cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ======================
+// Static Uploads
+// ======================
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 mongoose
@@ -44,7 +67,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 app.get("/", (req, res) => {
   res.send("🚀 HK Korean Institute Backend is Running!");
@@ -57,14 +80,18 @@ app.get("/api/message", (req, res) => {
   });
 });
 
-// Admissions Route (Supports both /api/admissions and /admissions)
+// ======================
+// Admission Route
+// ======================
 app.post(
   ["/api/admissions", "/admissions"],
   upload.single("profilePicture"),
   async (req, res) => {
     try {
       if (!req.file) {
-        return res.status(400).json({ error: "Profile picture is required." });
+        return res.status(400).json({
+          error: "Profile picture is required.",
+        });
       }
 
       const newAdmission = new Admission({
@@ -86,23 +113,31 @@ app.post(
       });
 
       await newAdmission.save();
-      res
-        .status(201)
-        .json({ message: "Admission application submitted successfully!" });
+
+      res.status(201).json({
+        success: true,
+        message: "Admission application submitted successfully!",
+      });
     } catch (error) {
-      console.error("Error saving admission:", error);
-      res.status(500).json({ error: "Failed to submit application." });
+      console.error(error);
+      res.status(500).json({
+        error: "Failed to submit application.",
+      });
     }
   },
 );
 
-// Contact Route (Supports both /api/contact and /contact)
+// ======================
+// Contact Route
+// ======================
 app.post(["/api/contact", "/contact"], async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
     if (!name || !email || !message) {
-      return res.status(400).json({ error: "All fields are required." });
+      return res.status(400).json({
+        error: "All fields are required.",
+      });
     }
 
     const newContact = new Contact({
@@ -112,15 +147,19 @@ app.post(["/api/contact", "/contact"], async (req, res) => {
     });
 
     await newContact.save();
-    res
-      .status(201)
-      .json({ success: true, message: "Message sent successfully!" });
+
+    res.status(201).json({
+      success: true,
+      message: "Message sent successfully!",
+    });
   } catch (error) {
-    console.error("Error saving contact message:", error);
-    res.status(500).json({ error: "Failed to send message." });
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to send message.",
+    });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
