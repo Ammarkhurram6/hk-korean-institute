@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useState } from "react";
-
+import API_URL from "../../config";
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,16 +9,41 @@ const Contact = () => {
     message: "",
   });
   const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMessage) setErrorMessage("");
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate EmailJS submission
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 5000);
-    setFormData({ name: "", email: "", message: "" });
+    setErrorMessage("");
+
+    try {
+      const response = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 5000);
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setErrorMessage(result.error || "Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Contact submission error:", error);
+      setErrorMessage(
+        "Could not connect to the server. Is the backend running?",
+      );
+    }
   };
 
   const contactInfo = [
@@ -133,7 +158,7 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all text-gray-900 dark:text-white"
                   placeholder="Enter Your Name"
                 />
               </div>
@@ -147,7 +172,7 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all text-gray-900 dark:text-white"
                   placeholder="Enter your Gmail"
                 />
               </div>
@@ -161,7 +186,7 @@ const Contact = () => {
                   onChange={handleChange}
                   required
                   rows="5"
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all resize-none text-gray-900 dark:text-white"
                   placeholder="I'm interested in the Beginner Korean course..."
                 ></textarea>
               </div>
@@ -173,6 +198,16 @@ const Contact = () => {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   ✓ Message sent successfully! We'll get back to you soon.
+                </motion.p>
+              )}
+
+              {errorMessage && (
+                <motion.p
+                  className="text-red-500 font-medium"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  ❌ {errorMessage}
                 </motion.p>
               )}
 

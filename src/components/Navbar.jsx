@@ -83,9 +83,15 @@ const Navbar = () => {
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
-            <a href="#contact" className="btn-primary text-sm">
+            <Link
+              to="/apply"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+              className="btn-primary text-center mt-2"
+            >
               Apply Now
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -125,13 +131,15 @@ const Navbar = () => {
                     {link.name}
                   </a>
                 ))}
-                <a
-                  href="#contact"
+                <Link
+                  to="/apply"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setIsOpen(false)}
                   className="btn-primary text-center mt-2"
                 >
                   Apply Now
-                </a>
+                </Link>
               </div>
             </motion.div>
           )}

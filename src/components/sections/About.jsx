@@ -65,7 +65,7 @@ const About = () => {
               About Us
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-6 text-navy dark:text-white">
-              Welcome to HK Institute of Korean Language
+              Welcome to HK Korean Language Institute
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
               We are dedicated to providing the highest quality Korean language

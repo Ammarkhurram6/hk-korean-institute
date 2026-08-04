@@ -7,11 +7,13 @@ import Home from "./pages/Home";
 import Loader from "./components/Loader";
 import ScrollToTop from "./components/ScrollToTop";
 import FloatingButtons from "./components/FloatingButtons";
+import Admission from "./pages/Admission";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
+  // Your existing loader logic
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
@@ -31,6 +33,7 @@ function App() {
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
+                <Route path="/apply" element={<Admission />} />
                 {/* Add more routes here if needed */}
               </Routes>
             </AnimatePresence>

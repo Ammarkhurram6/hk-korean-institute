@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaClock, FaSignal, FaCheckCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Courses = () => {
   const courses = [
@@ -133,12 +134,15 @@ const Courses = () => {
                 ))}
               </ul>
 
-              <a
-                href="#contact"
-                className="mt-auto btn-primary text-center text-sm py-2 relative z-10"
+              <Link
+                to="/apply"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="btn-primary text-center mt-2"
               >
                 Apply Now
-              </a>
+              </Link>
             </motion.div>
           ))}
         </div>

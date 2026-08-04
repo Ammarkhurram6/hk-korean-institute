@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const phrases = [
-  "Learn Korean.",
-  "Unlock Your Future.",
-  "Study in Seoul.",
-  "Boost Your Career.",
-  "Get Korean Work Visa via OEC.",
+  "Learn Korean",
+  "Unlock Your Future",
+  "Study in Seoul",
+  "Boost Your Career",
+  "Get Korean Work Visa via OEC",
 ];
 
 const Hero = () => {
@@ -111,9 +111,15 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <a href="#contact" className="btn-primary text-lg">
+          <Link
+            to="/apply"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsOpen(false)}
+            className="btn-primary text-center mt-2"
+          >
             Apply Now
-          </a>
+          </Link>
           <a
             href="#contact"
             className="btn-secondary text-lg bg-white/10 backdrop-blur-md border border-white/30"
