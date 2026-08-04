@@ -47,35 +47,67 @@ app.get("/api/message", (req, res) => {
   });
 });
 
-app.post("/api/admissions", upload.single("profilePicture"), async (req, res) => {
+// Admissions Route (Supports both /api/admissions and /admissions)
+app.post(
+  ["/api/admissions", "/admissions"],
+  upload.single("profilePicture"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "Profile picture is required." });
+      }
+
+      const newAdmission = new Admission({
+        name: req.body.name,
+        fatherName: req.body.fatherName,
+        dob: req.body.dob,
+        age: req.body.age,
+        gender: req.body.gender,
+        identityType: req.body.identityType,
+        identityNumber: req.body.identityNumber,
+        course: req.body.course,
+        occupation: req.body.occupation,
+        occupationOther: req.body.occupationOther,
+        studiedKoreanBefore: req.body.studiedKoreanBefore,
+        email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        profilePicture: req.file.filename,
+      });
+
+      await newAdmission.save();
+      res
+        .status(201)
+        .json({ message: "Admission application submitted successfully!" });
+    } catch (error) {
+      console.error("Error saving admission:", error);
+      res.status(500).json({ error: "Failed to submit application." });
+    }
+  },
+);
+
+// Contact Route (Supports both /api/contact and /contact)
+app.post(["/api/contact", "/contact"], async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "Profile picture is required." });
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: "All fields are required." });
     }
 
-    const newAdmission = new Admission({
-      name: req.body.name,
-      fatherName: req.body.fatherName,
-      dob: req.body.dob,
-      age: req.body.age,
-      gender: req.body.gender,
-      identityType: req.body.identityType,
-      identityNumber: req.body.identityNumber,
-      course: req.body.course,
-      occupation: req.body.occupation,
-      occupationOther: req.body.occupationOther,
-      studiedKoreanBefore: req.body.studiedKoreanBefore,
-      email: req.body.email,
-      phone: req.body.phone,
-      address: req.body.address,
-      profilePicture: req.file.filename,
+    const newContact = new Contact({
+      name,
+      email,
+      message,
     });
 
-    await newAdmission.save();
-    res.status(201).json({ message: "Admission application submitted successfully!" });
+    await newContact.save();
+    res
+      .status(201)
+      .json({ success: true, message: "Message sent successfully!" });
   } catch (error) {
-    console.error("Error saving admission:", error);
-    res.status(500).json({ error: "Failed to submit application." });
+    console.error("Error saving contact message:", error);
+    res.status(500).json({ error: "Failed to send message." });
   }
 });
 
@@ -94,7 +126,9 @@ app.post("/api/contact", async (req, res) => {
     });
 
     await newContact.save();
-    res.status(201).json({ success: true, message: "Message sent successfully!" });
+    res
+      .status(201)
+      .json({ success: true, message: "Message sent successfully!" });
   } catch (error) {
     console.error("Error saving contact message:", error);
     res.status(500).json({ error: "Failed to send message." });
