@@ -1,2 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://hk-korean-institute-production.up.railway.app";
+
 export default API_URL;
