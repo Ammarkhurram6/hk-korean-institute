@@ -1,4 +1,4 @@
-let rawUrl =
+const rawUrl =
   import.meta.env.VITE_API_URL ||
   "https://hk-korean-institute-production-28f8.up.railway.app";
 

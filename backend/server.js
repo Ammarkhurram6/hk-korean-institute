@@ -322,6 +322,9 @@ app.use((req, res) => {
 // ======================
 // MongoDB Connection + Start
 // ======================
+// ======================
+// MongoDB Connection + Start
+// ======================
 async function startServer() {
   try {
     if (!process.env.MONGO_URI) {
@@ -329,7 +332,9 @@ async function startServer() {
       process.exit(1);
     }
 
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI, {
+      dbName: "hk_korean",
+    });
 
     console.log("");
     console.log("====================================");
@@ -344,9 +349,11 @@ async function startServer() {
     });
   } catch (error) {
     console.error("");
-    console.error("❌ MongoDB Connection Error:");
+    console.error("====================================");
+    console.error("❌ MongoDB Connection Error");
+    console.error("====================================");
     console.error(error);
-    console.error("");
+    console.error("====================================");
 
     process.exit(1);
   }
