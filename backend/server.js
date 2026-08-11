@@ -21,6 +21,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
 
 const Admission = require("./models/Admission");
 const Contact = require("./models/Contact");
@@ -137,9 +138,106 @@ app.get("/api/db-status", (req, res) => {
   });
 });
 
-// ======================
-// Admission Route
-// ======================
+// ==================================================
+// 🔐 ADMIN LOGIN
+// ==================================================
+app.post("/api/admin/login", (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Check fields
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Username and password are required.",
+      });
+    }
+
+    // Check admin credentials
+    if (
+      username !== process.env.ADMIN_USERNAME ||
+      password !== process.env.ADMIN_PASSWORD
+    ) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid username or password.",
+      });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      {
+        username: username,
+        role: "admin",
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "8h",
+      },
+    );
+
+    console.log("🔐 Admin login successful:", username);
+
+    return res.json({
+      success: true,
+      message: "Admin login successful.",
+      token: token,
+    });
+  } catch (error) {
+    console.error("❌ Admin Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Login failed.",
+    });
+  }
+});
+
+// ==================================================
+// 🔐 ADMIN AUTHENTICATION MIDDLEWARE
+// ==================================================
+function verifyAdmin(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+
+    // Check Authorization header
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        error: "Admin authentication required.",
+      });
+    }
+
+    // Extract token
+    const token = authHeader.split(" ")[1];
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Check admin role
+    if (decoded.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        error: "Access denied.",
+      });
+    }
+
+    req.admin = decoded;
+
+    next();
+  } catch (error) {
+    console.error("❌ Admin Authentication Error:", error.message);
+
+    return res.status(401).json({
+      success: false,
+      error: "Invalid or expired admin session.",
+    });
+  }
+}
+
+// ==================================================
+// 📥 ADMISSION SUBMISSION
+// ==================================================
 app.post(
   ["/api/admissions", "/admissions"],
   upload.single("profilePicture"),
@@ -213,9 +311,6 @@ app.post(
       console.log("====================================");
       console.log("");
 
-      // ======================
-      // Response
-      // ======================
       return res.status(201).json({
         success: true,
         message: "Admission application submitted successfully!",
@@ -238,9 +333,9 @@ app.post(
   },
 );
 
-// ======================
-// Admission Count Test
-// ======================
+// ==================================================
+// 📊 ADMISSION COUNT
+// ==================================================
 app.get("/api/admissions/count", async (req, res) => {
   try {
     const count = await Admission.countDocuments();
@@ -261,9 +356,32 @@ app.get("/api/admissions/count", async (req, res) => {
   }
 });
 
-// ======================
-// Contact Route
-// ======================
+// ==================================================
+// 🔐 ADMIN - GET ALL ADMISSIONS
+// ==================================================
+app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
+  try {
+    const admissions = await Admission.find().sort({ createdAt: -1 }).lean();
+
+    return res.json({
+      success: true,
+      count: admissions.length,
+      admissions: admissions,
+    });
+  } catch (error) {
+    console.error("❌ Get Admissions Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch admissions.",
+      details: error.message,
+    });
+  }
+});
+
+// ==================================================
+// 📩 CONTACT SUBMISSION
+// ==================================================
 app.post(
   ["/api/contact", "/contact"],
 
@@ -309,6 +427,29 @@ app.post(
   },
 );
 
+// ==================================================
+// 🔐 ADMIN - GET ALL CONTACT MESSAGES
+// ==================================================
+app.get("/api/admin/contacts", verifyAdmin, async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 }).lean();
+
+    return res.json({
+      success: true,
+      count: contacts.length,
+      contacts: contacts,
+    });
+  } catch (error) {
+    console.error("❌ Get Contacts Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to fetch contact messages.",
+      details: error.message,
+    });
+  }
+});
+
 // ======================
 // 404 Handler
 // ======================
@@ -319,16 +460,28 @@ app.use((req, res) => {
   });
 });
 
-// ======================
-// MongoDB Connection + Start
-// ======================
-// ======================
-// MongoDB Connection + Start
-// ======================
+// ==================================================
+// MongoDB Connection + Start Server
+// ==================================================
 async function startServer() {
   try {
     if (!process.env.MONGO_URI) {
       console.error("❌ MONGO_URI is not defined!");
+      process.exit(1);
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error("❌ JWT_SECRET is not defined!");
+      process.exit(1);
+    }
+
+    if (!process.env.ADMIN_USERNAME) {
+      console.error("❌ ADMIN_USERNAME is not defined!");
+      process.exit(1);
+    }
+
+    if (!process.env.ADMIN_PASSWORD) {
+      console.error("❌ ADMIN_PASSWORD is not defined!");
       process.exit(1);
     }
 
