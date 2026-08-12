@@ -15,8 +15,8 @@ const FAQ = () => {
       a: "Course durations vary. Beginner courses are typically 3 months, while TOPIK preparation is an intensive 2-month program.",
     },
     {
-      q: "Are the teachers native Korean speakers?",
-      a: "Yes, all our lead instructors are native Korean speakers with excellent English proficiency and teaching certifications.",
+      q: "What is EPS?",
+      a: "EPS, or Employment Permit System, is a government-managed system of South Korea that allows eligible foreign workers from participating countries to legally work in Korea. Through EPS, workers can apply for employment, take the required Korean language test, receive job opportunities from eligible Korean employers, complete the employment contract and visa process, and enter Korea legally for work. The system also provides workers with employment rights and protections under Korean labor laws.",
     },
     {
       q: "Do you provide online classes?",
