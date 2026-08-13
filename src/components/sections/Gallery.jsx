@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import classroomImg from "../../assets/images/classroom1.jpeg";
 
 const Gallery = () => {
   const [selectedImg, setSelectedImg] = useState(null);
@@ -20,7 +21,7 @@ const Gallery = () => {
       alt: "Cherry Blossoms",
     },
     {
-      src: "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkoGGIZCFmZsyExqaktED8OXkZpbbn7PIvMVXfrx5AJFE48_XJyQm_Mwc9I4fngoVmKMZvyntuflvgcnM1FxQchksRTUUH2wiXacDCFWzuFCiPSjnLDzafCqi2o2MDA5H_zKkfL2EjV0Ljb=w408-h306-k-no",
+      src: classroomImg,
       alt: "Korean Classroom",
     },
     {
