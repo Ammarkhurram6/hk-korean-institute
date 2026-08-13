@@ -85,13 +85,39 @@ function Admin() {
   };
 
   // Handle Status Change Locally (UI Update)
-  const handleStatusChange = (id, newStatus) => {
+  // Handle Status Change (Database Update)
+  const handleStatusChange = async (id, newStatus) => {
+    // 1. Pehle UI par update kar dein taake user ko turant dikhe
     setAdmissions((prev) =>
       prev.map((item) =>
         item._id === id ? { ...item, status: newStatus } : item,
       ),
     );
-    // In a real app, you would also make a PATCH/PUT request to your API here to save the status.
+
+    // 2. Ab Backend API ko call karein taake database mein save ho jaye
+    try {
+      const response = await fetch(`${API_URL}/api/admin/admissions/${id}`, {
+        method: "PATCH", // ya "PUT"
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to update status in database");
+      }
+
+      console.log("Status updated successfully in DB!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update status. Reverting back.");
+      // Agar fail ho jaye, toh purana data wapas fetch kar lein
+      fetchAdminData();
+    }
   };
 
   // Filter Logic

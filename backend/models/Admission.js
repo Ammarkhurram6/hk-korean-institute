@@ -17,6 +17,10 @@ const admissionSchema = new mongoose.Schema({
   address: { type: String, required: true },
   profilePicture: { type: String, required: true }, // This will store the image filename/path
   createdAt: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    default: "Pending",
+  },
 });
 
 module.exports = mongoose.model("Admission", admissionSchema);

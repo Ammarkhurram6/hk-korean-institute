@@ -59,7 +59,7 @@ app.use(
       return callback(new Error("Not allowed by CORS"));
     },
 
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PATCH here
 
     credentials: true,
   }),
@@ -291,6 +291,7 @@ app.post(
         phone: req.body.phone,
         address: req.body.address,
         profilePicture: req.file.filename,
+        status: "Pending", // Set default status on new admission
       });
 
       // ======================
@@ -374,6 +375,51 @@ app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
     return res.status(500).json({
       success: false,
       error: "Failed to fetch admissions.",
+      details: error.message,
+    });
+  }
+});
+
+// ==================================================
+// 🔐 ADMIN - UPDATE ADMISSION STATUS (NEW ROUTE)
+// ==================================================
+app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        error: "Status is required.",
+      });
+    }
+
+    const updatedAdmission = await Admission.findByIdAndUpdate(
+      req.params.id,
+      { status: status },
+      { new: true }, // Return the updated document
+    );
+
+    if (!updatedAdmission) {
+      return res.status(404).json({
+        success: false,
+        error: "Admission not found.",
+      });
+    }
+
+    console.log(`✅ Updated admission ${req.params.id} status to ${status}`);
+
+    return res.json({
+      success: true,
+      message: "Status updated successfully.",
+      admission: updatedAdmission,
+    });
+  } catch (error) {
+    console.error("❌ Update Admission Status Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to update status.",
       details: error.message,
     });
   }
