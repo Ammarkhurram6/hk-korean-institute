@@ -32,7 +32,7 @@ function App() {
       </AnimatePresence>
 
       {!loading && (
-        <div className="relative min-h-screen flex flex-col">
+        <div className="relative min-h-screen flex flex-col overflow-x-hidden">
           <ScrollToTop />
 
           {!isAdminPage && <Navbar />}

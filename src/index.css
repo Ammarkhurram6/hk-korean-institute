@@ -12,12 +12,14 @@
       color 0.3s;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
   /* Dark mode standard CSS */
   html.dark body {
     background-color: #1a1a1a; /* charcoal */
     color: #ffffff;
+    overflow-x: hidden;
   }
 
   h1,
@@ -30,6 +32,7 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 }
 
