@@ -43,14 +43,13 @@ const Navbar = () => {
     { name: "Contact", href: "#contact" },
   ];
 
-  // Yeh function explicitly target section tak scroll karega
   const handleLinkClick = (e, href) => {
     e.preventDefault();
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    setIsOpen(false); // Scrolling ke baad menu band ho jayega
+    setIsOpen(false);
   };
 
   return (
@@ -66,9 +65,12 @@ const Navbar = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
+          {/* Logo Color Fix: Agar scrolled hai toh theme ke mutabiq, warna hamesha white */}
           <Link
             to="/"
-            className="flex items-center gap-2 text-2xl font-display font-bold text-navy dark:text-white"
+            className={`flex items-center gap-2 text-2xl font-display font-bold transition-colors duration-300 ${
+              scrolled ? "text-navy dark:text-white" : "text-white"
+            }`}
           >
             <span className="text-kred text-3xl">HK</span> Institute
           </Link>
@@ -80,15 +82,23 @@ const Navbar = () => {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                className="text-sm font-medium text-charcoal dark:text-white hover:text-kred transition-colors relative group cursor-pointer"
+                // Text Color Fix: Agar scrolled hai toh theme ke mutabiq, warna hamesha white
+                className={`text-sm font-medium transition-colors relative group cursor-pointer ${
+                  scrolled
+                    ? "text-charcoal dark:text-white hover:text-kred"
+                    : "text-white hover:text-kred"
+                }`}
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-kred group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
+            {/* Icon Color Fix */}
             <button
               onClick={toggleDarkMode}
-              className="text-charcoal dark:text-white text-xl"
+              className={`text-xl transition-colors duration-300 ${
+                scrolled ? "text-charcoal dark:text-white" : "text-white"
+              }`}
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
@@ -103,15 +113,21 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4 z-[70]">
+            {/* Icon Color Fix */}
             <button
               onClick={toggleDarkMode}
-              className="text-charcoal dark:text-white text-xl"
+              className={`text-xl transition-colors duration-300 ${
+                scrolled ? "text-charcoal dark:text-white" : "text-white"
+              }`}
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
+            {/* Burger Icon Color Fix */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-charcoal dark:text-white text-2xl"
+              className={`text-2xl transition-colors duration-300 ${
+                scrolled ? "text-charcoal dark:text-white" : "text-white"
+              }`}
             >
               {isOpen ? <FiX /> : <FiMenu />}
             </button>
