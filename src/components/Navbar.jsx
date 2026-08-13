@@ -39,14 +39,22 @@ const Navbar = () => {
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
     { name: "Courses", href: "#courses" },
-    { name: "Teachers", href: "#teachers" },
     { name: "Gallery", href: "#gallery" },
     { name: "Contact", href: "#contact" },
   ];
 
+  // Yeh function explicitly target section tak scroll karega
+  const handleLinkClick = (e, href) => {
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    setIsOpen(false); // Scrolling ke baad menu band ho jayega
+  };
+
   return (
     <>
-      {/* Scroll Progress Bar */}
       <ScrollProgress />
 
       <motion.nav
@@ -71,7 +79,8 @@ const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-charcoal dark:text-white hover:text-kred transition-colors relative group"
+                onClick={(e) => handleLinkClick(e, link.href)}
+                className="text-sm font-medium text-charcoal dark:text-white hover:text-kred transition-colors relative group cursor-pointer"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-kred group-hover:w-full transition-all duration-300"></span>
@@ -83,19 +92,17 @@ const Navbar = () => {
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
-            <Link
-              to="/apply"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setIsOpen(false)}
-              className="btn-primary text-center mt-2"
+            <a
+              href="#contact"
+              onClick={(e) => handleLinkClick(e, "#contact")}
+              className="btn-primary text-sm"
             >
               Apply Now
-            </Link>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center gap-4">
+          <div className="lg:hidden flex items-center gap-4 z-[70]">
             <button
               onClick={toggleDarkMode}
               className="text-charcoal dark:text-white text-xl"
@@ -115,31 +122,30 @@ const Navbar = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden overflow-hidden glass-card mt-3 mx-4 rounded-2xl"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden glass-card mt-3 mx-4 rounded-2xl absolute left-0 right-0 z-[60] shadow-2xl p-6"
             >
-              <div className="flex flex-col p-6 gap-4">
+              <div className="flex flex-col gap-5">
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="text-charcoal dark:text-white font-medium hover:text-kred transition-colors"
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className="font-medium transition-colors text-lg text-charcoal dark:text-white hover:text-kred"
                   >
                     {link.name}
                   </a>
                 ))}
-                <Link
-                  to="/apply"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsOpen(false)}
+                <a
+                  href="#contact"
+                  onClick={(e) => handleLinkClick(e, "#contact")}
                   className="btn-primary text-center mt-2"
                 >
                   Apply Now
-                </Link>
+                </a>
               </div>
             </motion.div>
           )}
