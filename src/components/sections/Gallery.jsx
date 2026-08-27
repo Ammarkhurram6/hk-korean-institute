@@ -28,10 +28,10 @@ const Gallery = () => {
       src: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?q=80&w=1587&auto=format&fit=crop",
       alt: "N Seoul Tower",
     },
-    {
-      src: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1587&auto=format&fit=crop",
-      alt: "Traditional Hanok",
-    },
+    // {
+    //   src: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1587&auto=format&fit=crop",
+    //   alt: "Traditional Hanok",
+    // },
   ];
 
   return (

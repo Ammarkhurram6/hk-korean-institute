@@ -10,6 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
+
     window.addEventListener("scroll", handleScroll);
 
     if (
@@ -32,6 +33,7 @@ const Navbar = () => {
       document.documentElement.classList.add("dark");
       localStorage.theme = "dark";
     }
+
     setDarkMode(!darkMode);
   };
 
@@ -45,10 +47,16 @@ const Navbar = () => {
 
   const handleLinkClick = (e, href) => {
     e.preventDefault();
+
     const target = document.querySelector(href);
+
     if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
+
     setIsOpen(false);
   };
 
@@ -65,14 +73,15 @@ const Navbar = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
-          {/* Logo Color Fix: Agar scrolled hai toh theme ke mutabiq, warna hamesha white */}
+          {/* Logo */}
           <Link
             to="/"
             className={`flex items-center gap-2 text-2xl font-display font-bold transition-colors duration-300 ${
               scrolled ? "text-navy dark:text-white" : "text-white"
             }`}
           >
-            <span className="text-kred text-3xl">HK</span> Institute
+            <span className="text-kred text-3xl">HK</span>
+            Institute
           </Link>
 
           {/* Desktop Menu */}
@@ -82,7 +91,6 @@ const Navbar = () => {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                // Text Color Fix: Agar scrolled hai toh theme ke mutabiq, warna hamesha white
                 className={`text-sm font-medium transition-colors relative group cursor-pointer ${
                   scrolled
                     ? "text-charcoal dark:text-white hover:text-kred"
@@ -90,10 +98,12 @@ const Navbar = () => {
                 }`}
               >
                 {link.name}
+
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-kred group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
-            {/* Icon Color Fix */}
+
+            {/* Dark Mode */}
             <button
               onClick={toggleDarkMode}
               className={`text-xl transition-colors duration-300 ${
@@ -102,18 +112,16 @@ const Navbar = () => {
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
-            <a
-              href="#contact"
-              onClick={(e) => handleLinkClick(e, "#contact")}
-              className="btn-primary text-sm"
-            >
+
+            {/* APPLY NOW - FIXED */}
+            <Link to="/apply" className="btn-primary text-sm" target="_blank">
               Apply Now
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4 z-[70]">
-            {/* Icon Color Fix */}
+            {/* Dark Mode */}
             <button
               onClick={toggleDarkMode}
               className={`text-xl transition-colors duration-300 ${
@@ -122,7 +130,8 @@ const Navbar = () => {
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
-            {/* Burger Icon Color Fix */}
+
+            {/* Burger */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className={`text-2xl transition-colors duration-300 ${
@@ -155,13 +164,16 @@ const Navbar = () => {
                     {link.name}
                   </a>
                 ))}
-                <a
-                  href="#contact"
-                  onClick={(e) => handleLinkClick(e, "#contact")}
+
+                {/* MOBILE APPLY NOW - FIXED */}
+                <Link
+                  to="/apply"
+                  onClick={() => setIsOpen(false)}
                   className="btn-primary text-center mt-2"
+                  target="_blank"
                 >
                   Apply Now
-                </a>
+                </Link>
               </div>
             </motion.div>
           )}
@@ -179,10 +191,15 @@ const ScrollProgress = () => {
       const totalHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
+
+      const progress =
+        totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+
       setScrollProgress(progress);
     };
+
     window.addEventListener("scroll", handleScroll);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

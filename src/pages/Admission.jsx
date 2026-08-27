@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import API_URL from "../config";
 
+
 function Admission() {
   const [formData, setFormData] = useState({
     name: "",
@@ -75,10 +76,10 @@ function Admission() {
         return;
       }
 
-      const maxSizeInBytes = 50 * 1024; // 50 KB
+      const maxSizeInBytes = 150 * 1024; // 150 KB
       if (file.size > maxSizeInBytes) {
         setErrorMessage(
-          "File size is too large! Please upload a photo up to 50 KB.",
+          "File size is too large! Please upload a photo up to 150 KB.",
         );
         e.target.value = "";
         return;
@@ -199,7 +200,7 @@ function Admission() {
             <label className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-900 font-medium rounded-full hover:bg-gray-200 transition text-sm shadow-sm border border-gray-300 flex flex-col items-center">
               <span>Upload Passport Photo</span>
               <span className="text-xs text-red-600 font-semibold mt-1">
-                JPG/JPEG only, Max 50KB
+                JPG/JPEG only, Max 150KB
               </span>
               <input
                 type="file"
