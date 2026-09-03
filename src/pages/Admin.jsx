@@ -321,13 +321,10 @@ function Admin() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                   {filteredAdmissions.map((admission) => (
-                    <tr
-                      key={admission._id}
-                      className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                    >
-                      <td
-                        colSpan="4"
-                        className="p-0"
+                    <>
+                      <tr
+                        key={admission._id}
+                        className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                         onClick={() =>
                           setExpandedRow(
                             expandedRow === admission._id
@@ -336,7 +333,7 @@ function Admin() {
                           )
                         }
                       >
-                        <div className="px-6 py-4 flex items-center justify-between">
+                        <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-navy/10 dark:bg-white/10 text-navy dark:text-white flex items-center justify-center font-bold text-sm">
                               {admission.name?.charAt(0).toUpperCase()}
@@ -350,21 +347,120 @@ function Admin() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-6">
-                            <span className="px-3 py-1 bg-kred/10 text-kred rounded-full text-xs font-semibold">
-                              {admission.course || "-"}
-                            </span>
-                            <div>{renderStatusBadge(admission.status)}</div>
-                            <button className="text-gray-400 hover:text-navy dark:hover:text-white inline-flex items-center gap-1 text-sm font-medium">
-                              {expandedRow === admission._id ? "Hide" : "View"}
-                              <FiChevronDown
-                                className={`transition-transform ${expandedRow === admission._id ? "rotate-180" : ""}`}
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="px-3 py-1 bg-kred/10 text-kred rounded-full text-xs font-semibold">
+                            {admission.course || "-"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          {renderStatusBadge(admission.status)}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button className="text-gray-400 hover:text-navy dark:hover:text-white inline-flex items-center gap-1 text-sm font-medium">
+                            {expandedRow === admission._id ? "Hide" : "View"}
+                            <FiChevronDown
+                              className={`transition-transform ${expandedRow === admission._id ? "rotate-180" : ""}`}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+
+                      {/* Expandable Details Row with Profile Picture */}
+                      <AnimatePresence>
+                        {expandedRow === admission._id && (
+                          <motion.tr
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="bg-gray-50/50 dark:bg-white/[0.02]"
+                          >
+                            <td colSpan="4" className="px-6 py-6">
+                              <div className="grid md:grid-cols-3 gap-6 items-center">
+                                <div className="space-y-4 md:col-span-2">
+                                  <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                      <p className="text-gray-400 mb-1">
+                                        Phone Number
+                                      </p>
+                                      <p className="font-medium text-navy dark:text-white">
+                                        {admission.phone || "Not provided"}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-gray-400 mb-1">
+                                        Gender
+                                      </p>
+                                      <p className="font-medium text-navy dark:text-white">
+                                        {admission.gender || "Not specified"}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-gray-400 mb-1">
+                                        Application Date
+                                      </p>
+                                      <p className="font-medium text-navy dark:text-white">
+                                        {admission.createdAt
+                                          ? new Date(
+                                              admission.createdAt,
+                                            ).toLocaleDateString()
+                                          : "Unknown"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Student Profile Picture Display */}
+                                <div className="flex flex-col items-center justify-center border-l border-gray-200 dark:border-white/10 pl-6">
+                                  <p className="text-sm font-semibold text-navy dark:text-white mb-2">
+                                    Profile Photo:
+                                  </p>
+                                  {admission.profilePicture ? (
+                                    <a
+                                      href={`${API_URL}/uploads/${admission.profilePicture}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <img
+                                        src={`${API_URL}/uploads/${admission.profilePicture}`}
+                                        alt="Student Profile"
+                                        className="w-24 h-24 object-cover rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:scale-105 transition-transform"
+                                      />
+                                    </a>
+                                  ) : (
+                                    <p className="text-gray-400 text-sm">
+                                      No photo uploaded
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Status Update Controls */}
+                                <div className="flex flex-col gap-2 border-l border-gray-200 dark:border-white/10 pl-6 md:col-span-3">
+                                  <p className="text-sm font-semibold text-navy dark:text-white mb-1">
+                                    Update Status:
+                                  </p>
+                                  <select
+                                    value={admission.status || "Pending"}
+                                    onChange={(e) =>
+                                      handleStatusChange(
+                                        admission._id,
+                                        e.target.value,
+                                      )
+                                    }
+                                    className="bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred max-w-xs"
+                                  >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Reviewed">Reviewed</option>
+                                    <option value="Accepted">Accepted</option>
+                                    <option value="Rejected">Rejected</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </td>
+                          </motion.tr>
+                        )}
+                      </AnimatePresence>
+                    </>
                   ))}
                 </tbody>
               </table>
