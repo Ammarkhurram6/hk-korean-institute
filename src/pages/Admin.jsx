@@ -485,6 +485,9 @@ function Admin() {
                   <p className="mt-2 text-gray-600 dark:text-gray-300 leading-relaxed">
                     {contact.message}
                   </p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    📞 <strong>Phone:</strong> {msg.phone}
+                  </p>
                 </motion.div>
               ))}
             </div>
