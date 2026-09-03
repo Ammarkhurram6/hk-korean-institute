@@ -433,14 +433,14 @@ app.post(
 
   async (req, res) => {
     try {
-      const { name, email, message } = req.body;
+      const { name, email, phone, message } = req.body;
 
       console.log("📩 New contact message:", {
         name,
         email,
       });
 
-      if (!name || !email || !message) {
+      if (!name || !email || !phone || !message) {
         return res.status(400).json({
           success: false,
           error: "All fields are required.",
@@ -450,6 +450,7 @@ app.post(
       const newContact = new Contact({
         name,
         email,
+        phone,
         message,
       });
 

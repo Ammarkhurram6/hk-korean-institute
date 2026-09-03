@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { useState } from "react";
 import API_URL from "../../config";
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: "",
   });
   const [success, setSuccess] = useState(false);
@@ -34,7 +36,7 @@ const Contact = () => {
       if (response.ok) {
         setSuccess(true);
         setTimeout(() => setSuccess(false), 5000);
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", message: "" });
       } else {
         setErrorMessage(result.error || "Failed to send message.");
       }
@@ -174,6 +176,20 @@ const Contact = () => {
                   required
                   className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all text-gray-900 dark:text-white"
                   placeholder="Enter your Gmail"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-kred focus:outline-none transition-all text-gray-900 dark:text-white"
+                  placeholder="Enter your mobile number"
                 />
               </div>
               <div>
