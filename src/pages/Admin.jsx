@@ -455,6 +455,14 @@ function Admin() {
                                           : "Unknown"}
                                       </p>
                                     </div>
+                                    <div>
+                                      <p className="text-gray-400 mb-1">
+                                        Address
+                                      </p>
+                                      <p className="font-medium text-navy dark:text-white">
+                                        {admission.address || "Not provided"}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
 
