@@ -116,6 +116,54 @@ function Admin() {
     }
   };
 
+  // Handle Delete Admission
+  const handleDeleteAdmission = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this admission?"))
+      return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/admin/admissions/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAdmissions((prev) => prev.filter((item) => item._id !== id));
+      } else {
+        alert(data.error || "Failed to delete admission.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting admission.");
+    }
+  };
+
+  // Handle Delete Contact
+  const handleDeleteContact = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this message?"))
+      return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/admin/contacts/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setContacts((prev) => prev.filter((item) => item._id !== id));
+      } else {
+        alert(data.error || "Failed to delete message.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error deleting message.");
+    }
+  };
+
   // Filter Logic
   const filteredAdmissions = admissions.filter((item) => {
     const matchesSearch =
@@ -366,7 +414,7 @@ function Admin() {
                         </td>
                       </tr>
 
-                      {/* Expandable Details Row with Profile Picture */}
+                      {/* Expandable Details Row with Profile Picture & Delete */}
                       <AnimatePresence>
                         {expandedRow === admission._id && (
                           <motion.tr
@@ -434,26 +482,37 @@ function Admin() {
                                   )}
                                 </div>
 
-                                {/* Status Update Controls */}
-                                <div className="flex flex-col gap-2 border-l border-gray-200 dark:border-white/10 pl-6 md:col-span-3">
-                                  <p className="text-sm font-semibold text-navy dark:text-white mb-1">
-                                    Update Status:
-                                  </p>
-                                  <select
-                                    value={admission.status || "Pending"}
-                                    onChange={(e) =>
-                                      handleStatusChange(
-                                        admission._id,
-                                        e.target.value,
-                                      )
+                                {/* Status Update & Delete Application Controls */}
+                                <div className="flex items-center justify-between border-l border-gray-200 dark:border-white/10 pl-6 md:col-span-3 pt-4">
+                                  <div>
+                                    <p className="text-sm font-semibold text-navy dark:text-white mb-1">
+                                      Update Status:
+                                    </p>
+                                    <select
+                                      value={admission.status || "Pending"}
+                                      onChange={(e) =>
+                                        handleStatusChange(
+                                          admission._id,
+                                          e.target.value,
+                                        )
+                                      }
+                                      className="bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred"
+                                    >
+                                      <option value="Pending">Pending</option>
+                                      <option value="Reviewed">Reviewed</option>
+                                      <option value="Accepted">Accepted</option>
+                                      <option value="Rejected">Rejected</option>
+                                    </select>
+                                  </div>
+
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteAdmission(admission._id)
                                     }
-                                    className="bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred max-w-xs"
+                                    className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                                   >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Reviewed">Reviewed</option>
-                                    <option value="Accepted">Accepted</option>
-                                    <option value="Rejected">Rejected</option>
-                                  </select>
+                                    Delete Application
+                                  </button>
                                 </div>
                               </div>
                             </td>
@@ -498,9 +557,17 @@ function Admin() {
                     <h3 className="font-bold text-lg text-navy dark:text-white">
                       {contact.name}
                     </h3>
-                    <span className="text-sm text-gray-400">
-                      {contact.email}
-                    </span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm text-gray-400">
+                        {contact.email}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteContact(contact._id)}
+                        className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-3 py-1 rounded-lg text-sm font-medium transition-all"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                   <p className="mt-2 text-gray-600 dark:text-gray-300 leading-relaxed">
                     {contact.message}

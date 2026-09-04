@@ -496,7 +496,71 @@ app.get("/api/admin/contacts", verifyAdmin, async (req, res) => {
     });
   }
 });
+// ==================================================
+// 🔐 ADMIN - DELETE ADMISSION
+// ==================================================
+app.delete("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
+  try {
+    const admission = await Admission.findByIdAndDelete(req.params.id);
 
+    if (!admission) {
+      return res.status(404).json({
+        success: false,
+        error: "Admission not found.",
+      });
+    }
+
+    // Optional: Server se profile picture bhi delete kar dein agar mojood ho
+    if (admission.profilePicture) {
+      const filePath = path.join(uploadDirectory, admission.profilePicture);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    console.log(`🗑️ Deleted admission: ${req.params.id}`);
+
+    return res.json({
+      success: true,
+      message: "Admission deleted successfully.",
+    });
+  } catch (error) {
+    console.error("❌ Delete Admission Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete admission.",
+    });
+  }
+});
+
+// ==================================================
+// 🔐 ADMIN - DELETE CONTACT MESSAGE
+// ==================================================
+app.delete("/api/admin/contacts/:id", verifyAdmin, async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        error: "Contact message not found.",
+      });
+    }
+
+    console.log(`🗑️ Deleted contact message: ${req.params.id}`);
+
+    return res.json({
+      success: true,
+      message: "Contact message deleted successfully.",
+    });
+  } catch (error) {
+    console.error("❌ Delete Contact Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete contact message.",
+    });
+  }
+});
 // ======================
 // 404 Handler
 // ======================
