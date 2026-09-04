@@ -26,7 +26,7 @@ const FloatingButtons = () => {
         </motion.button>
       )}
       <motion.a
-        href="https://wa.me/+923436808080"
+        href="https://wa.me/923436808080?text=Assalam-o-Alaikum,%20I%20want%20to%20inquire%20about%20admissions%20at%20HK%20Institute."
         target="_blank"
         rel="noopener noreferrer"
         className="p-4 rounded-full bg-green-500 text-white shadow-lg hover:scale-110 transition-transform flex items-center justify-center"

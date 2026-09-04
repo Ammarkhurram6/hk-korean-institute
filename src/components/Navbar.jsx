@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX, FiSun, FiMoon } from "react-icons/fi";
 
@@ -7,6 +7,10 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const location = useLocation();
+
+  // Check if we are on the apply page
+  const isApplyPage = location.pathname === "/apply";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -38,27 +42,31 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Courses", href: "#courses" },
-    { name: "Gallery", href: "#gallery" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/#home" },
+    { name: "About", href: "/#about" },
+    { name: "Courses", href: "/#courses" },
+    { name: "Gallery", href: "/#gallery" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   const handleLinkClick = (e, href) => {
-    e.preventDefault();
-
-    const target = document.querySelector(href);
-
-    if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (href.startsWith("/#")) {
+      e.preventDefault();
+      const targetId = href.replace("/", "");
+      if (window.location.pathname !== "/") {
+        window.location.href = href;
+      } else {
+        const target = document.querySelector(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     }
-
     setIsOpen(false);
   };
+
+  // Force solid navbar on apply page or when scrolled
+  const showSolidNavbar = scrolled || isApplyPage;
 
   return (
     <>
@@ -66,7 +74,9 @@ const Navbar = () => {
 
       <motion.nav
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "glass-card py-3" : "bg-transparent py-5"
+          showSolidNavbar
+            ? "bg-white/90 dark:bg-navy/95 backdrop-blur-md shadow-sm py-3 border-b border-gray-100 dark:border-white/10"
+            : "bg-transparent py-5"
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -76,8 +86,8 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
-            className={`flex items-center gap-2 text-2xl font-display font-bold transition-colors duration-300 ${
-              scrolled ? "text-navy dark:text-white" : "text-white"
+            className={`flex items-center gap-2 text-2xl font-display font-bold transition-colors duration-300 whitespace-nowrap flex-shrink-0 ${
+              showSolidNavbar ? "text-navy dark:text-white" : "text-white"
             }`}
           >
             <span className="text-kred text-3xl">HK</span>
@@ -92,13 +102,12 @@ const Navbar = () => {
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
                 className={`text-sm font-medium transition-colors relative group cursor-pointer ${
-                  scrolled
+                  showSolidNavbar
                     ? "text-charcoal dark:text-white hover:text-kred"
                     : "text-white hover:text-kred"
                 }`}
               >
                 {link.name}
-
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-kred group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
@@ -107,13 +116,13 @@ const Navbar = () => {
             <button
               onClick={toggleDarkMode}
               className={`text-xl transition-colors duration-300 ${
-                scrolled ? "text-charcoal dark:text-white" : "text-white"
+                showSolidNavbar ? "text-charcoal dark:text-white" : "text-white"
               }`}
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
 
-            {/* APPLY NOW - FIXED */}
+            {/* APPLY NOW */}
             <Link to="/apply" className="btn-primary text-sm" target="_blank">
               Apply Now
             </Link>
@@ -121,21 +130,19 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4 z-[70]">
-            {/* Dark Mode */}
             <button
               onClick={toggleDarkMode}
               className={`text-xl transition-colors duration-300 ${
-                scrolled ? "text-charcoal dark:text-white" : "text-white"
+                showSolidNavbar ? "text-charcoal dark:text-white" : "text-white"
               }`}
             >
               {darkMode ? <FiSun /> : <FiMoon />}
             </button>
 
-            {/* Burger */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className={`text-2xl transition-colors duration-300 ${
-                scrolled ? "text-charcoal dark:text-white" : "text-white"
+                showSolidNavbar ? "text-charcoal dark:text-white" : "text-white"
               }`}
             >
               {isOpen ? <FiX /> : <FiMenu />}
@@ -151,7 +158,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
-              className="lg:hidden glass-card mt-3 mx-4 rounded-2xl absolute left-0 right-0 z-[60] shadow-2xl p-6"
+              className="lg:hidden mt-3 mx-4 rounded-2xl absolute left-0 right-0 z-[60] shadow-2xl p-6 bg-white dark:bg-navy border border-gray-100 dark:border-white/10"
             >
               <div className="flex flex-col gap-5">
                 {navLinks.map((link) => (
@@ -165,7 +172,6 @@ const Navbar = () => {
                   </a>
                 ))}
 
-                {/* MOBILE APPLY NOW - FIXED */}
                 <Link
                   to="/apply"
                   onClick={() => setIsOpen(false)}
@@ -191,15 +197,12 @@ const ScrollProgress = () => {
       const totalHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
-
       const progress =
         totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-
       setScrollProgress(progress);
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

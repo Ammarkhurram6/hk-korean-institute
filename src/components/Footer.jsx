@@ -140,7 +140,12 @@ const Footer = () => {
               Terms & Conditions
             </a>
             <p>
-              Crafted with ❤️ by <span className="text-white">M.Ammar</span>
+              Crafted with ❤️ by{" "}
+              <span className="text-white">
+                <a href="https://wa.me/923226869309" target="_blank">
+                  M.Ammar
+                </a>
+              </span>
             </p>
           </div>
         </div>

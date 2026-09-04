@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import API_URL from "../config";
 
-
 function Admission() {
   const [formData, setFormData] = useState({
     name: "",
@@ -23,7 +22,7 @@ function Admission() {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(""); // 🔴 Red Warning State
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (formData.dob) {
@@ -49,7 +48,7 @@ function Admission() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (errorMessage) setErrorMessage(""); // Clear warning when user types
+    if (errorMessage) setErrorMessage("");
   };
 
   const handleCnicChange = (e) => {
@@ -103,7 +102,6 @@ function Admission() {
     submitData.append("profilePicture", formData.profilePicture);
 
     try {
-      // 🔄 Sirf yahan localhost ki jagah ${API_URL} laga diya hai
       const response = await fetch(`${API_URL}/api/admissions`, {
         method: "POST",
         body: submitData,
@@ -114,7 +112,6 @@ function Admission() {
       if (response.ok) {
         alert("🎉 Application Submitted Successfully!");
 
-        // 👉 Yeh form clear wala code bilkul safe hai, kahin nahi ja raha!
         setFormData({
           name: "",
           fatherName: "",
@@ -150,13 +147,13 @@ function Admission() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="max-w-4xl mx-auto my-12 p-8 bg-white rounded-2xl shadow-2xl border border-gray-100"
+      className="max-w-4xl mx-auto my-28 p-8 bg-white dark:bg-[#111c34] text-navy dark:text-white rounded-3xl shadow-2xl border border-gray-100 dark:border-white/15 transition-colors"
     >
       <div className="text-center mb-8">
-        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
+        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 dark:from-red-500 dark:to-red-400">
           Admission Application
         </h2>
-        <p className="text-gray-500 mt-2">
+        <p className="text-gray-500 dark:text-gray-400 mt-2">
           Join HK Institute and start your Korean journey today.
         </p>
       </div>
@@ -166,7 +163,7 @@ function Admission() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 p-4 bg-red-100 border-l-4 border-red-600 text-red-700 font-semibold rounded-r-lg shadow-sm flex items-center justify-between"
+          className="mb-6 p-4 bg-red-100 dark:bg-red-500/10 border-l-4 border-red-600 text-red-700 dark:text-red-400 font-semibold rounded-r-lg shadow-sm flex items-center justify-between"
         >
           <span>{errorMessage}</span>
           <button
@@ -181,7 +178,7 @@ function Admission() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* 📸 Profile Picture */}
         <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 bg-gray-50 flex items-center justify-center shadow-inner">
+          <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-black/20 flex items-center justify-center shadow-inner">
             {imagePreview ? (
               <img
                 src={imagePreview}
@@ -197,9 +194,9 @@ function Admission() {
             )}
           </div>
           <div className="text-center">
-            <label className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-900 font-medium rounded-full hover:bg-gray-200 transition text-sm shadow-sm border border-gray-300 flex flex-col items-center">
+            <label className="cursor-pointer px-4 py-2 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white font-medium rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition text-sm shadow-sm border border-gray-300 dark:border-white/20 flex flex-col items-center">
               <span>Upload Passport Photo</span>
-              <span className="text-xs text-red-600 font-semibold mt-1">
+              <span className="text-xs text-red-600 dark:text-red-400 font-semibold mt-1">
                 JPG/JPEG only, Max 150KB
               </span>
               <input
@@ -217,7 +214,7 @@ function Admission() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Full Name
             </label>
             <input
@@ -226,14 +223,14 @@ function Admission() {
               value={formData.name}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
               placeholder="e.g. Ali Khan"
             />
           </div>
 
           {/* Father's Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Father's Name
             </label>
             <input
@@ -242,14 +239,14 @@ function Admission() {
               value={formData.fatherName}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             />
           </div>
 
           {/* Date of Birth & Auto Age */}
           <div className="flex gap-4">
             <div className="flex-grow">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                 Date of Birth
               </label>
               <input
@@ -258,18 +255,18 @@ function Admission() {
                 value={formData.dob}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
               />
             </div>
             <div className="w-24">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                 Age
               </label>
               <input
                 type="text"
                 value={formData.age}
                 readOnly
-                className="w-full rounded-lg border border-gray-300 shadow-inner bg-gray-200 text-gray-900 font-bold p-3 text-center cursor-not-allowed outline-none"
+                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-inner bg-gray-200 dark:bg-white/10 text-gray-900 dark:text-white font-bold p-3 text-center cursor-not-allowed outline-none"
                 placeholder="--"
               />
             </div>
@@ -277,7 +274,7 @@ function Admission() {
 
           {/* Gender */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Gender
             </label>
             <select
@@ -285,18 +282,26 @@ function Admission() {
               value={formData.gender}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             >
-              <option value="">Select Gender...</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
+              <option value="" className="dark:bg-[#111c34]">
+                Select Gender...
+              </option>
+              <option value="Male" className="dark:bg-[#111c34]">
+                Male
+              </option>
+              <option value="Female" className="dark:bg-[#111c34]">
+                Female
+              </option>
+              <option value="Other" className="dark:bg-[#111c34]">
+                Other
+              </option>
             </select>
           </div>
 
           {/* 🆔 Identity Document */}
-          <div className="col-span-1 md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-300">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">
+          <div className="col-span-1 md:col-span-2 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-300 dark:border-white/20">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
               Identity Document
             </label>
             <div className="flex gap-6 mb-2">
@@ -310,7 +315,9 @@ function Admission() {
                   onChange={handleChange}
                   className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
                 />
-                <span className="ml-2 text-gray-900 font-medium">CNIC</span>
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  CNIC
+                </span>
               </label>
               <label className="flex items-center cursor-pointer">
                 <input
@@ -322,7 +329,9 @@ function Admission() {
                   onChange={handleChange}
                   className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
                 />
-                <span className="ml-2 text-gray-900 font-medium">Passport</span>
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  Passport
+                </span>
               </label>
             </div>
 
@@ -332,7 +341,7 @@ function Admission() {
                 animate={{ opacity: 1, height: "auto" }}
                 className="mt-4"
               >
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Enter {formData.identityType} Number
                 </label>
                 <input
@@ -346,7 +355,7 @@ function Admission() {
                       : handleChange
                   }
                   maxLength={formData.identityType === "CNIC" ? 15 : 20}
-                  className="w-full md:w-1/2 rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-white text-gray-900 outline-none"
+                  className="w-full md:w-1/2 rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-white dark:bg-black/30 text-gray-900 dark:text-white outline-none"
                   placeholder={
                     formData.identityType === "CNIC"
                       ? "XXXXX-XXXXXXX-X"
@@ -359,7 +368,7 @@ function Admission() {
 
           {/* 🎓 Course Selection */}
           <div className="col-span-1 md:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Select Course to Apply
             </label>
             <select
@@ -367,18 +376,27 @@ function Admission() {
               value={formData.course}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             >
-              <option value="">Select a Course...</option>
-              <option value="EPS TOPIK">EPS TOPIK</option>
-              <option value="TOPIK 1">TOPIK 1</option>
-              <option value="Basic Korean Language">
+              <option value="" className="dark:bg-[#111c34]">
+                Select a Course...
+              </option>
+              <option value="EPS TOPIK" className="dark:bg-[#111c34]">
+                EPS TOPIK
+              </option>
+              <option value="TOPIK 1" className="dark:bg-[#111c34]">
+                TOPIK 1
+              </option>
+              <option
+                value="Basic Korean Language"
+                className="dark:bg-[#111c34]"
+              >
                 Basic Korean Language
               </option>
               <option
                 value="TOPIK 2"
                 disabled
-                className="text-gray-400 bg-gray-100 italic"
+                className="text-gray-400 bg-gray-100 dark:bg-white/5 italic"
               >
                 TOPIK 2 (Currently Unavailable)
               </option>
@@ -387,7 +405,7 @@ function Admission() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Email Address
             </label>
             <input
@@ -396,13 +414,13 @@ function Admission() {
               value={formData.email}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Phone Number
             </label>
             <input
@@ -411,13 +429,13 @@ function Admission() {
               value={formData.phone}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             />
           </div>
 
           {/* Occupation */}
           <div className="col-span-1 md:col-span-2">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Occupation
             </label>
             <select
@@ -425,13 +443,23 @@ function Admission() {
               value={formData.occupation}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
             >
-              <option value="">Select Occupation...</option>
-              <option value="Student">Student</option>
-              <option value="Job Holder">Job Holder</option>
-              <option value="Businessman">Businessman</option>
-              <option value="Other">Other</option>
+              <option value="" className="dark:bg-[#111c34]">
+                Select Occupation...
+              </option>
+              <option value="Student" className="dark:bg-[#111c34]">
+                Student
+              </option>
+              <option value="Job Holder" className="dark:bg-[#111c34]">
+                Job Holder
+              </option>
+              <option value="Businessman" className="dark:bg-[#111c34]">
+                Businessman
+              </option>
+              <option value="Other" className="dark:bg-[#111c34]">
+                Other
+              </option>
             </select>
           </div>
 
@@ -442,7 +470,7 @@ function Admission() {
               animate={{ opacity: 1, height: "auto" }}
               className="col-span-1 md:col-span-2"
             >
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                 Please describe your occupation
               </label>
               <input
@@ -451,15 +479,15 @@ function Admission() {
                 value={formData.occupationOther}
                 required={formData.occupation === "Other"}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-red-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-red-50 text-gray-900 outline-none"
+                className="w-full rounded-lg border border-red-300 dark:border-red-500/30 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-red-50 dark:bg-red-500/10 text-gray-900 dark:text-white outline-none"
                 placeholder="E.g. Freelancer, Artist..."
               />
             </motion.div>
           )}
 
           {/* Previous Korean Study */}
-          <div className="col-span-1 md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-300">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">
+          <div className="col-span-1 md:col-span-2 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-300 dark:border-white/20">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
               Have you studied Korean before?
             </label>
             <div className="flex gap-6">
@@ -473,7 +501,9 @@ function Admission() {
                   onChange={handleChange}
                   className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
                 />
-                <span className="ml-2 text-gray-900 font-medium">Yes</span>
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  Yes
+                </span>
               </label>
               <label className="flex items-center cursor-pointer">
                 <input
@@ -485,7 +515,9 @@ function Admission() {
                   onChange={handleChange}
                   className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
                 />
-                <span className="ml-2 text-gray-900 font-medium">No</span>
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  No
+                </span>
               </label>
             </div>
           </div>
@@ -493,7 +525,7 @@ function Admission() {
 
         {/* Address */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
             Full Residential Address
           </label>
           <textarea
@@ -502,7 +534,7 @@ function Admission() {
             value={formData.address}
             required
             onChange={handleChange}
-            className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 text-gray-900 outline-none"
+            className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
           ></textarea>
         </div>
 
