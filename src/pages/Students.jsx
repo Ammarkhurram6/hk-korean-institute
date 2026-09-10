@@ -26,6 +26,8 @@ import {
   DURATION_OPTIONS,
   calculateLastDay,
   STATUS_OPTIONS,
+  COURSE_FEES,
+  getCourseFee,
 } from "../utils/studentHelpers";
 
 const inputClass =
@@ -241,7 +243,7 @@ function Students() {
               label: "Outstanding",
               value: showFees
                 ? formatPKRCompact(totalOutstanding)
-                : "PKR •••••",
+                : "PKR *****",
               color: "bg-kred/10 text-kred",
               eye: true,
             },
@@ -409,13 +411,8 @@ function Students() {
                       <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                         {feeBadge(getFeeStatus(student))}
                       </td>
-                      <td
-                        className="px-3 sm:px-4 py-3 font-semibold text-navy dark:text-white whitespace-nowrap"
-                        title={formatPKR(getRemainingFee(student))}
-                      >
-                        {showFees
-                          ? formatPKRCompact(getRemainingFee(student))
-                          : "PKR •••••"}
+                      <td className="px-3 sm:px-4 py-3 font-semibold text-navy dark:text-white whitespace-nowrap">
+                        {formatPKRCompact(getRemainingFee(student))}
                       </td>
                       <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                         {statusBadge(student.status)}
@@ -539,6 +536,21 @@ function AddStudentModal({ onClose, onCreated }) {
     } finally {
       setSubmitting(false);
     }
+  };
+  const [customCourse, setCustomCourse] = useState(false);
+
+  const handleCourseChange = (val) => {
+    if (val === "__custom__") {
+      setCustomCourse(true);
+      return;
+    }
+    setCustomCourse(false);
+    setForm((prev) => {
+      const next = { ...prev, course: val };
+      const fee = getCourseFee(val);
+      if (fee > 0) next.totalFee = String(fee); // Total Fee bhi auto-fill
+      return next;
+    });
   };
 
   return (
@@ -724,14 +736,34 @@ function AddStudentModal({ onClose, onCreated }) {
               <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
                 Course
               </label>
-              <input
-                type="text"
-                name="course"
-                value={form.course}
-                onChange={handleChange}
+              <select
+                value={customCourse ? "__custom__" : form.course}
+                onChange={(e) => handleCourseChange(e.target.value)}
                 className={inputClass}
-                placeholder="EPS TOPIK"
-              />
+              >
+                <option value="">Select Course</option>
+                {Object.entries(COURSE_FEES).map(([name, fee]) => (
+                  <option key={name} value={name}>
+                    {name} — PKR {fee.toLocaleString("en-PK")}
+                  </option>
+                ))}
+                <option value="__custom__">Other (Manual Entry)</option>
+              </select>
+              {customCourse && (
+                <input
+                  type="text"
+                  name="course"
+                  value={form.course}
+                  onChange={handleChange}
+                  className={`${inputClass} mt-2`}
+                  placeholder="Custom course name likhein"
+                />
+              )}
+              {getCourseFee(form.course) > 0 && (
+                <p className="text-xs text-green-600 font-medium mt-1.5">
+                  ✓ Fee auto-filled: {formatPKR(getCourseFee(form.course))}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">

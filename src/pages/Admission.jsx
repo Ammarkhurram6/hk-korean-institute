@@ -394,6 +394,12 @@ function Admission() {
                 Basic Korean Language
               </option>
               <option
+                value="Fast-Track Korean (40 Days)"
+                className="dark:bg-[#111c34]"
+              >
+                Fast-Track Korean (40 Days)
+              </option>
+              <option
                 value="TOPIK 2"
                 disabled
                 className="text-gray-400 bg-gray-100 dark:bg-white/5 italic"

@@ -60,19 +60,18 @@ export const toDateInput = (d) => {
 };
 
 export const DURATION_OPTIONS = [
-  "3 Months",
-  "40 Days",
   "1 Month",
-  "2 Months",
+  "40 Days",
+  "3 Months",
   "6 Months",
   "1 Year",
 ];
 
 export const DURATION_DAYS = {
-  "3 Months": 90,
-  "40 Days": 40,
   "1 Month": 30,
+  "40 Days": 40,
   "2 Months": 60,
+  "3 Months": 90,
   "6 Months": 180,
   "1 Year": 365,
 };
@@ -100,4 +99,23 @@ export const formatPKRCompact = (n) => {
   return `PKR ${num.toLocaleString("en-PK")}`;
 };
 
+// Course Fee Structure (PKR)
+export const COURSE_FEES = {
+  "EPS TOPIK": 25000,
+  "TOPIK 1": 15000,
+  "Basic Korean Language": 25000,
+  "Fast-Track Korean (40 Days)": 20000,
+};
+
+// Course name se fee nikalne ka helper (fuzzy match bhi karta hai)
+export const getCourseFee = (courseName) => {
+  if (!courseName) return 0;
+  if (COURSE_FEES[courseName] !== undefined) return COURSE_FEES[courseName];
+  // Case/space differences handle karne ke liye
+  const normalized = String(courseName).toLowerCase().trim();
+  const found = Object.keys(COURSE_FEES).find(
+    (key) => key.toLowerCase().trim() === normalized,
+  );
+  return found ? COURSE_FEES[found] : 0;
+};
 export const STATUS_OPTIONS = ["Active", "Completed", "Dropped", "On Hold"];
