@@ -493,9 +493,9 @@ function Admin() {
                                     >
                                       <img
                                         src={
-                                          admission.profilePicture
-                                            ? `${API_URL}/uploads/${admission.profilePicture}`
-                                            : `https://ui-avatars.com/api/?name=${encodeURIComponent(admission.name)}&background=CD2E3A&color=fff&bold=true&size=128`
+                                          app.profilePicture.startsWith("http")
+                                            ? app.profilePicture
+                                            : `${API_URL}/${app.profilePicture}`
                                         }
                                         alt={admission.name || "Applicant"}
                                         className="w-10 h-10 rounded-full object-cover shadow-sm"
