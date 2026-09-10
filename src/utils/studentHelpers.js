@@ -86,5 +86,18 @@ export const calculateLastDay = (joiningDate, duration) => {
   d.setDate(d.getDate() + days);
   return d.toISOString().split("T")[0];
 };
+// Compact format: 15000 -> PKR 15K, 1500000 -> PKR 1.5M
+export const formatPKRCompact = (n) => {
+  const num = Number(n || 0);
+  if (num >= 1000000) {
+    const v = num / 1000000;
+    return `PKR ${v % 1 === 0 ? v : v.toFixed(1)}M`;
+  }
+  if (num >= 1000) {
+    const v = num / 1000;
+    return `PKR ${v % 1 === 0 ? v : v.toFixed(1)}K`;
+  }
+  return `PKR ${num.toLocaleString("en-PK")}`;
+};
 
 export const STATUS_OPTIONS = ["Active", "Completed", "Dropped", "On Hold"];

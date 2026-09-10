@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -16,8 +16,7 @@ import {
   FiEye,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+import API_URL from "../config";
 
 function Admin() {
   const navigate = useNavigate();
@@ -181,21 +180,18 @@ function Admin() {
     ...new Set(admissions.map((item) => item.course).filter(Boolean)),
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-lightgray dark:bg-charcoal text-navy dark:text-white">
-        <FiLoader className="animate-spin text-5xl text-kred mb-4" />
-        <p className="text-xl font-display font-semibold tracking-wide">
-          Loading Admin Dashboard...
-        </p>
-      </div>
-    );
-  }
+  // Helper function to safely get Image URL
+  const getValidImageUrl = (picPath) => {
+    if (!picPath) return "";
+    if (picPath.startsWith("http")) return picPath;
+    const cleanPath = picPath.startsWith("/") ? picPath.substring(1) : picPath;
+    return `${API_URL}/${cleanPath}`;
+  };
 
   // Helper to render status badges
   const renderStatusBadge = (status) => {
     const base =
-      "px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5";
+      "px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 w-max";
     switch (status) {
       case "Accepted":
         return (
@@ -223,6 +219,17 @@ function Admin() {
         );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-lightgray dark:bg-charcoal text-navy dark:text-white">
+        <FiLoader className="animate-spin text-5xl text-kred mb-4" />
+        <p className="text-xl font-display font-semibold tracking-wide">
+          Loading Admin Dashboard...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-lightgray dark:bg-charcoal transition-colors">
@@ -383,9 +390,8 @@ function Admin() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                   {filteredAdmissions.map((admission) => (
-                    <>
+                    <Fragment key={admission._id}>
                       <tr
-                        key={admission._id}
                         className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
                         onClick={() =>
                           setExpandedRow(
@@ -411,7 +417,7 @@ function Admin() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-kred/10 text-kred rounded-full text-xs font-semibold">
+                          <span className="px-3 py-1 bg-kred/10 text-kred rounded-full text-xs font-semibold whitespace-nowrap">
                             {admission.course || "-"}
                           </span>
                         </td>
@@ -487,18 +493,18 @@ function Admin() {
                                   </p>
                                   {admission.profilePicture ? (
                                     <a
-                                      href={`${API_URL}/uploads/${admission.profilePicture}`}
+                                      href={getValidImageUrl(
+                                        admission.profilePicture,
+                                      )}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                     >
                                       <img
-                                        src={
-                                          app.profilePicture.startsWith("http")
-                                            ? app.profilePicture
-                                            : `${API_URL}/${app.profilePicture}`
-                                        }
+                                        src={getValidImageUrl(
+                                          admission.profilePicture,
+                                        )}
                                         alt={admission.name || "Applicant"}
-                                        className="w-10 h-10 rounded-full object-cover shadow-sm"
+                                        className="w-16 h-16 rounded-full object-cover shadow-md hover:scale-105 transition-transform"
                                       />
                                     </a>
                                   ) : (
@@ -509,9 +515,9 @@ function Admin() {
                                 </div>
 
                                 {/* Status Update & Delete Application Controls */}
-                                <div className="flex items-center justify-between border-l border-gray-200 dark:border-white/10 pl-6 md:col-span-3 pt-4">
-                                  <div>
-                                    <p className="text-sm font-semibold text-navy dark:text-white mb-1">
+                                <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 dark:border-white/10 pt-4 md:col-span-3 mt-2 gap-4">
+                                  <div className="flex items-center gap-3">
+                                    <p className="text-sm font-semibold text-navy dark:text-white">
                                       Update Status:
                                     </p>
                                     <select
@@ -522,7 +528,7 @@ function Admin() {
                                           e.target.value,
                                         )
                                       }
-                                      className="bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred"
+                                      className="bg-white dark:bg-charcoal border border-gray-200 dark:border-white/10 rounded-lg px-3 py-1.5 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred"
                                     >
                                       <option value="Pending">Pending</option>
                                       <option value="Reviewed">Reviewed</option>
@@ -535,7 +541,7 @@ function Admin() {
                                     onClick={() =>
                                       handleDeleteAdmission(admission._id)
                                     }
-                                    className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+                                    className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all w-full sm:w-auto"
                                   >
                                     Delete Application
                                   </button>
@@ -545,7 +551,7 @@ function Admin() {
                           </motion.tr>
                         )}
                       </AnimatePresence>
-                    </>
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
@@ -583,7 +589,7 @@ function Admin() {
                     <h3 className="font-bold text-lg text-navy dark:text-white">
                       {contact.name}
                     </h3>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4">
                       <span className="text-sm text-gray-400">
                         {contact.email}
                       </span>

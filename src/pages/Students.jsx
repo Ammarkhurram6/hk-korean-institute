@@ -9,6 +9,7 @@ import {
   FiDollarSign,
   FiAlertCircle,
   FiEye,
+  FiEyeOff,
   FiTrash2,
   FiX,
   FiLoader,
@@ -21,6 +22,7 @@ import {
   getFeeStatus,
   getRemainingFee,
   formatPKR,
+  formatPKRCompact,
   DURATION_OPTIONS,
   calculateLastDay,
   STATUS_OPTIONS,
@@ -74,6 +76,9 @@ function Students() {
   const [feeFilter, setFeeFilter] = useState("All");
 
   const [showAddModal, setShowAddModal] = useState(false);
+
+  // Banking-app style fee privacy toggle (default hidden)
+  const [showFees, setShowFees] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -208,30 +213,37 @@ function Students() {
               label: "Total Students",
               value: students.length,
               color: "bg-navy/10 text-navy dark:text-white",
+              eye: false,
             },
             {
               icon: <FiUserCheck />,
               label: "Active",
               value: activeCount,
               color: "bg-green-100 text-green-600",
+              eye: false,
             },
             {
               icon: <FiUserCheck />,
               label: "Completed",
               value: completedCount,
               color: "bg-blue-100 text-blue-600",
+              eye: false,
             },
             {
               icon: <FiClock />,
               label: "Pending Fees",
               value: pendingFeesCount,
               color: "bg-yellow-100 text-yellow-600",
+              eye: false,
             },
             {
               icon: <FiDollarSign />,
               label: "Outstanding",
-              value: formatPKR(totalOutstanding),
+              value: showFees
+                ? formatPKRCompact(totalOutstanding)
+                : "PKR •••••",
               color: "bg-kred/10 text-kred",
+              eye: true,
             },
           ].map((card, i) => (
             <motion.div
@@ -241,10 +253,21 @@ function Students() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <div
-                className={`w-11 h-11 rounded-xl ${card.color} flex items-center justify-center text-lg mb-3`}
-              >
-                {card.icon}
+              <div className="flex items-start justify-between mb-3">
+                <div
+                  className={`w-11 h-11 rounded-xl ${card.color} flex items-center justify-center text-lg`}
+                >
+                  {card.icon}
+                </div>
+                {card.eye && (
+                  <button
+                    onClick={() => setShowFees((prev) => !prev)}
+                    className="text-gray-400 hover:text-kred transition-colors p-1"
+                    title={showFees ? "Hide fee" : "Show fee"}
+                  >
+                    {showFees ? <FiEyeOff /> : <FiEye />}
+                  </button>
+                )}
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">
                 {card.label}
@@ -386,8 +409,13 @@ function Students() {
                       <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                         {feeBadge(getFeeStatus(student))}
                       </td>
-                      <td className="px-3 sm:px-4 py-3 font-semibold text-navy dark:text-white whitespace-nowrap">
-                        {formatPKR(getRemainingFee(student))}
+                      <td
+                        className="px-3 sm:px-4 py-3 font-semibold text-navy dark:text-white whitespace-nowrap"
+                        title={formatPKR(getRemainingFee(student))}
+                      >
+                        {showFees
+                          ? formatPKRCompact(getRemainingFee(student))
+                          : "PKR •••••"}
                       </td>
                       <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                         {statusBadge(student.status)}
