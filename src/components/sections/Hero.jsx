@@ -111,21 +111,26 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <Link
-            to="/apply"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
-            className="btn-primary text-center mt-2"
-          >
-            Apply Now
-          </Link>
-          <a
-            href="#contact"
-            className="btn-secondary text-lg bg-white/10 backdrop-blur-md border border-white/30"
-          >
-            Contact Us
-          </a>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {/* Apply Now Button */}
+            <Link
+              to="/apply"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+              className="w-48 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 inline-flex items-center justify-center"
+            >
+              Apply Now
+            </Link>
+
+            {/* Contact Us Button */}
+            <a
+              href="#contact"
+              className="w-48 py-4 bg-white/10 backdrop-blur-md border border-white/30 hover:border-white text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 inline-flex items-center justify-center"
+            >
+              Contact Us
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
