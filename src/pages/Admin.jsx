@@ -228,8 +228,9 @@ function Admin() {
     <div className="min-h-screen bg-lightgray dark:bg-charcoal transition-colors">
       {/* Premium Header */}
       <header className="bg-white dark:bg-navy shadow-sm border-b border-gray-100 dark:border-white/10 sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-navy/80">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Logo & Title */}
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-start">
             <div className="w-10 h-10 rounded-xl bg-kred text-white flex items-center justify-center font-display font-bold shadow-md">
               HK
             </div>
@@ -242,22 +243,27 @@ function Admin() {
               </p>
             </div>
           </div>
-          <Link
-            to="/admin/students"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-navy text-white hover:opacity-90 px-4 py-2 rounded-xl font-semibold transition-all text-sm"
-          >
-            <FiUsers /> Student Records
-          </Link>
-          <motion.button
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogout}
-            className="flex items-center gap-2 bg-kred/10 text-kred hover:bg-kred hover:text-white px-4 py-2 rounded-xl font-semibold transition-all text-sm"
-          >
-            <FiLogOut /> Logout
-          </motion.button>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <Link
+              to="/admin/students"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-navy text-white hover:opacity-90 px-4 py-2 rounded-xl font-semibold transition-all text-sm flex-1 sm:flex-initial"
+            >
+              <FiUsers /> Student Records
+            </Link>
+
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 bg-kred/10 text-kred hover:bg-kred hover:text-white px-4 py-2 rounded-xl font-semibold transition-all text-sm flex-1 sm:flex-initial"
+            >
+              <FiLogOut /> Logout
+            </motion.button>
+          </div>
         </div>
       </header>
 
