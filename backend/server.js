@@ -25,6 +25,7 @@ const jwt = require("jsonwebtoken");
 
 const Admission = require("./models/Admission");
 const Contact = require("./models/Contact");
+const Student = require("./models/Student");
 
 // ======================
 // App Configuration
@@ -383,45 +384,286 @@ app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
 // ==================================================
 // 🔐 ADMIN - UPDATE ADMISSION STATUS (NEW ROUTE)
 // ==================================================
+// ==================================================
+// 🔐 ADMIN - UPDATE ADMISSION STATUS (+ auto student)
+// ==================================================
 app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
   try {
     const { status } = req.body;
 
     if (!status) {
-      return res.status(400).json({
-        success: false,
-        error: "Status is required.",
-      });
+      return res.status(400).json({ success: false, error: "Status is required." });
     }
 
-    const updatedAdmission = await Admission.findByIdAndUpdate(
-      req.params.id,
-      { status: status },
-      { new: true }, // Return the updated document
-    );
+    const admission = await Admission.findById(req.params.id);
 
-    if (!updatedAdmission) {
-      return res.status(404).json({
-        success: false,
-        error: "Admission not found.",
-      });
+    if (!admission) {
+      return res.status(404).json({ success: false, error: "Admission not found." });
+    }
+
+    admission.status = status;
+    await admission.save();
+
+    let studentCreated = false;
+    let studentId = null;
+
+    if (status === "Accepted") {
+      // Duplicate protection: only create if no student exists for this admission
+      const existingStudent = await Student.findOne({ admissionId: admission._id });
+
+      if (!existingStudent) {
+        const newStudent = new Student({
+          admissionId: admission._id,
+          name: admission.name,
+          fatherName: admission.fatherName,
+          dob: admission.dob,
+          age: admission.age,
+          gender: admission.gender,
+          identityType: admission.identityType,
+          identityNumber: admission.identityNumber,
+          email: admission.email,
+          phone: admission.phone,
+          address: admission.address,
+          course: admission.course,
+          occupation: admission.occupation,
+          occupationOther: admission.occupationOther,
+          studiedKoreanBefore: admission.studiedKoreanBefore,
+          profilePicture: admission.profilePicture,
+          admissionDate: admission.createdAt,
+          status: "Active",
+          totalFee: 0,
+          payments: [],
+        });
+
+        await newStudent.save();
+        studentCreated = true;
+        studentId = newStudent._id;
+        console.log("🎓 Student record auto-created for admission:", admission._id);
+      }
     }
 
     console.log(`✅ Updated admission ${req.params.id} status to ${status}`);
 
     return res.json({
       success: true,
-      message: "Status updated successfully.",
-      admission: updatedAdmission,
+      message: studentCreated
+        ? "Status updated. Student record created automatically."
+        : "Status updated successfully.",
+      admission,
+      studentCreated,
+      studentId,
     });
   } catch (error) {
     console.error("❌ Update Admission Status Error:", error);
-
     return res.status(500).json({
       success: false,
       error: "Failed to update status.",
       details: error.message,
     });
+  }
+});
+// ==================================================
+// 🎓 ADMIN - STUDENT MANAGEMENT
+// ==================================================
+
+// GET all students
+app.get("/api/admin/students", verifyAdmin, async (req, res) => {
+  try {
+    const students = await Student.find().sort({ createdAt: -1 }).lean();
+    return res.json({ success: true, count: students.length, students });
+  } catch (error) {
+    console.error("❌ Get Students Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to fetch students." });
+  }
+});
+
+// GET single student
+app.get("/api/admin/students/:id", verifyAdmin, async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id).lean();
+    if (!student) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+    return res.json({ success: true, student });
+  } catch (error) {
+    console.error("❌ Get Student Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to fetch student." });
+  }
+});
+
+// CREATE student (manual) - accepts multipart with optional profilePicture
+app.post("/api/admin/students", verifyAdmin, upload.single("profilePicture"), async (req, res) => {
+  try {
+    const b = req.body;
+
+    if (!b.name || !b.name.trim()) {
+      return res.status(400).json({ success: false, error: "Student name is required." });
+    }
+
+    const student = new Student({
+      name: b.name,
+      fatherName: b.fatherName || "",
+      dob: b.dob || "",
+      age: b.age || "",
+      gender: b.gender || "",
+      identityType: b.identityType || "",
+      identityNumber: b.identityNumber || "",
+      email: b.email || "",
+      phone: b.phone || "",
+      address: b.address || "",
+      course: b.course || "",
+      occupation: b.occupation || "",
+      occupationOther: b.occupationOther || "",
+      studiedKoreanBefore: b.studiedKoreanBefore || "",
+      profilePicture: req.file ? req.file.filename : "",
+      courseDuration: b.courseDuration || "",
+      customDuration: b.customDuration || "",
+      joiningDate: b.joiningDate || null,
+      lastDay: b.lastDay || null,
+      status: b.status || "Active",
+      totalFee: b.totalFee ? Number(b.totalFee) : 0,
+      notes: b.notes || "",
+      payments: [],
+    });
+
+    await student.save();
+
+    console.log("🎓 New student created manually:", student.name);
+
+    return res.status(201).json({
+      success: true,
+      message: "Student created successfully.",
+      student,
+    });
+  } catch (error) {
+    console.error("❌ Create Student Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create student.",
+      details: error.message,
+    });
+  }
+});
+
+// UPDATE student (accepts JSON or multipart for photo)
+app.put("/api/admin/students/:id", verifyAdmin, upload.single("profilePicture"), async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+
+    const b = req.body;
+
+    const updatable = [
+      "name", "fatherName", "dob", "age", "gender", "identityType", "identityNumber",
+      "email", "phone", "address", "course", "occupation", "occupationOther",
+      "studiedKoreanBefore", "courseDuration", "customDuration", "status", "notes",
+    ];
+    updatable.forEach((key) => {
+      if (b[key] !== undefined) student[key] = b[key];
+    });
+
+    if (b.totalFee !== undefined) student.totalFee = Number(b.totalFee) || 0;
+    if (b.joiningDate !== undefined) student.joiningDate = b.joiningDate || null;
+    if (b.lastDay !== undefined) student.lastDay = b.lastDay || null;
+    if (b.book !== undefined) student.book = { ...student.book?.toObject?.(), ...b.book };
+    if (req.file) student.profilePicture = req.file.filename;
+
+    await student.save();
+
+    return res.json({ success: true, message: "Student updated successfully.", student });
+  } catch (error) {
+    console.error("❌ Update Student Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to update student." });
+  }
+});
+
+// DELETE student
+app.delete("/api/admin/students/:id", verifyAdmin, async (req, res) => {
+  try {
+    const deleted = await Student.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+    return res.json({ success: true, message: "Student deleted successfully." });
+  } catch (error) {
+    console.error("❌ Delete Student Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to delete student." });
+  }
+});
+
+// ADD payment
+app.post("/api/admin/students/:id/payments", verifyAdmin, async (req, res) => {
+  try {
+    const { amount, date, details } = req.body;
+
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({ success: false, error: "Valid payment amount is required." });
+    }
+
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+
+    student.payments.push({
+      amount: Number(amount),
+      date: date || new Date(),
+      details: details || "",
+    });
+
+    await student.save();
+
+    return res.status(201).json({ success: true, message: "Payment added successfully.", student });
+  } catch (error) {
+    console.error("❌ Add Payment Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to add payment." });
+  }
+});
+
+// UPDATE payment
+app.put("/api/admin/students/:id/payments/:paymentId", verifyAdmin, async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+
+    const payment = student.payments.id(req.params.paymentId);
+    if (!payment) {
+      return res.status(404).json({ success: false, error: "Payment not found." });
+    }
+
+    const { amount, date, details } = req.body;
+    if (amount !== undefined) payment.amount = Number(amount);
+    if (date !== undefined && date) payment.date = date;
+    if (details !== undefined) payment.details = details;
+
+    await student.save();
+
+    return res.json({ success: true, message: "Payment updated successfully.", student });
+  } catch (error) {
+    console.error("❌ Update Payment Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to update payment." });
+  }
+});
+
+// DELETE payment
+app.delete("/api/admin/students/:id/payments/:paymentId", verifyAdmin, async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ success: false, error: "Student not found." });
+    }
+
+    student.payments.pull(req.params.paymentId);
+    await student.save();
+
+    return res.json({ success: true, message: "Payment deleted successfully.", student });
+  } catch (error) {
+    console.error("❌ Delete Payment Error:", error);
+    return res.status(500).json({ success: false, error: "Failed to delete payment." });
   }
 });
 

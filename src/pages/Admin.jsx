@@ -15,6 +15,7 @@ import {
   FiXCircle,
   FiEye,
 } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -241,7 +242,14 @@ function Admin() {
               </p>
             </div>
           </div>
-
+          <Link
+            to="/admin/students"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-navy text-white hover:opacity-90 px-4 py-2 rounded-xl font-semibold transition-all text-sm"
+          >
+            <FiUsers /> Student Records
+          </Link>
           <motion.button
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
@@ -478,9 +486,13 @@ function Admin() {
                                       rel="noopener noreferrer"
                                     >
                                       <img
-                                        src={`${API_URL}/uploads/${admission.profilePicture}`}
-                                        alt="Student Profile"
-                                        className="w-24 h-24 object-cover rounded-xl border border-gray-200 dark:border-white/10 shadow-sm hover:scale-105 transition-transform"
+                                        src={
+                                          admission.profilePicture
+                                            ? `${API_URL}/uploads/${admission.profilePicture}`
+                                            : `https://ui-avatars.com/api/?name=${encodeURIComponent(admission.name)}&background=CD2E3A&color=fff&bold=true&size=128`
+                                        }
+                                        alt={admission.name || "Applicant"}
+                                        className="w-10 h-10 rounded-full object-cover shadow-sm"
                                       />
                                     </a>
                                   ) : (

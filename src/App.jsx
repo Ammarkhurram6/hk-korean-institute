@@ -11,6 +11,8 @@ import FloatingButtons from "./components/FloatingButtons";
 import Admission from "./pages/Admission";
 import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
+import Students from "./pages/Students";
+import StudentProfile from "./pages/StudentProfile";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,11 @@ function App() {
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/students" element={<Students />} />
+                <Route
+                  path="/admin/students/:id"
+                  element={<StudentProfile />}
+                />
               </Routes>
             </AnimatePresence>
           </main>
