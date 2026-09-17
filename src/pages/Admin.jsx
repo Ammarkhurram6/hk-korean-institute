@@ -181,11 +181,12 @@ function Admin() {
   ];
 
   // Helper function to safely get Image URL
+  // Helper function to safely get Image URL
   const getValidImageUrl = (picPath) => {
     if (!picPath) return "";
     if (picPath.startsWith("http")) return picPath;
     const cleanPath = picPath.startsWith("/") ? picPath.substring(1) : picPath;
-    return `${API_URL}/${cleanPath}`;
+    return `${API_URL}/uploads/${cleanPath}`;
   };
 
   // Helper to render status badges
