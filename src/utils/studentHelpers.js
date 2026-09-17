@@ -1,24 +1,22 @@
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-export const getPhotoUrl = (profilePicture, name) => {
+const getPhotoUrl = (profilePicture, name) => {
   if (!profilePicture) {
-    // Fallback avatar agar photo mojood na ho
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       name || "Student",
     )}&background=CD2E3A&color=fff&bold=true&size=256`;
   }
 
-  // Agar already full URL ho (jaise Cloudinary ya http se shuru ho)
   if (profilePicture.startsWith("http")) {
     return profilePicture;
   }
 
-  // Relative path ke sath Render backend URL (`API_URL`) attach karna
-  const cleanPath = profilePicture.startsWith("/")
-    ? profilePicture
-    : `/${profilePicture}`;
+  // Yahan humne '/uploads/' manually add kar diya hai
+  const fileName = profilePicture.startsWith("/")
+    ? profilePicture.slice(1) // agar shuru mein slash hai toh hata do
+    : profilePicture;
 
-  return `${API_URL}${cleanPath}`;
+  return `${API_URL}/uploads/${fileName}`;
 };
 
 export const getTotalPaid = (student) =>
