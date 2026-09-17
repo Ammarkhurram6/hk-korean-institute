@@ -761,7 +761,7 @@ function AddStudentModal({ onClose, onCreated }) {
               )}
               {getCourseFee(form.course) > 0 && (
                 <p className="text-xs text-green-600 font-medium mt-1.5">
-                  ✓ Fee auto-filled: {formatPKR(getCourseFee(form.course))}
+                  ✓ Fee : {formatPKR(getCourseFee(form.course))}
                 </p>
               )}
             </div>

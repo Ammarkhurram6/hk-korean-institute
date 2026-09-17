@@ -19,7 +19,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const path = require("path");
+const path = require('path');
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 
@@ -104,7 +104,7 @@ if (!fs.existsSync(uploadDirectory)) {
 // ======================
 // Static Uploads
 // ======================
-app.use("/uploads", express.static(uploadDirectory));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ======================
 // Multer Configuration
