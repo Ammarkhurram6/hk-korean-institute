@@ -19,13 +19,14 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const path = require('path');
+const path = require("path");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 
 const Admission = require("./models/Admission");
 const Contact = require("./models/Contact");
 const Student = require("./models/Student");
+
 // ======================
 // Course Fee Structure
 // ======================
@@ -45,6 +46,7 @@ function getCourseFee(courseName) {
   );
   return found ? COURSE_FEES[found] : 0;
 }
+
 // ======================
 // App Configuration
 // ======================
@@ -65,7 +67,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests without an origin
       if (!origin) {
         return callback(null, true);
       }
@@ -77,9 +78,7 @@ app.use(
       console.log("❌ CORS blocked:", origin);
       return callback(new Error("Not allowed by CORS"));
     },
-
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Added PATCH here
-
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   }),
 );
@@ -91,42 +90,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ======================
-// Upload Directory
+// Cloudinary & Multer Setup
 // ======================
-const uploadDirectory = path.join(__dirname, "uploads");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory, {
-    recursive: true,
-  });
-}
+// 1. Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// ======================
-// Static Uploads
-// ======================
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// ======================
-// Multer Configuration
-// ======================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDirectory);
-  },
-
-  filename: (req, file, cb) => {
-    const extension = path.extname(file.originalname);
-
-    const filename =
-      Date.now() + "-" + Math.round(Math.random() * 1e9) + extension;
-
-    cb(null, filename);
+// 2. Cloudinary Storage Setup
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "hkkorean_students",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
 });
 
-const upload = multer({
-  storage: storage,
-});
+const upload = multer({ storage: storage });
 
 // ======================
 // Home Route
@@ -164,7 +149,6 @@ app.post("/api/admin/login", (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check fields
     if (!username || !password) {
       return res.status(400).json({
         success: false,
@@ -172,7 +156,6 @@ app.post("/api/admin/login", (req, res) => {
       });
     }
 
-    // Check admin credentials
     if (
       username !== process.env.ADMIN_USERNAME ||
       password !== process.env.ADMIN_PASSWORD
@@ -183,7 +166,6 @@ app.post("/api/admin/login", (req, res) => {
       });
     }
 
-    // Create JWT token
     const token = jwt.sign(
       {
         username: username,
@@ -204,7 +186,6 @@ app.post("/api/admin/login", (req, res) => {
     });
   } catch (error) {
     console.error("❌ Admin Login Error:", error);
-
     return res.status(500).json({
       success: false,
       error: "Login failed.",
@@ -219,7 +200,6 @@ function verifyAdmin(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
 
-    // Check Authorization header
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
@@ -227,13 +207,9 @@ function verifyAdmin(req, res, next) {
       });
     }
 
-    // Extract token
     const token = authHeader.split(" ")[1];
-
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Check admin role
     if (decoded.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -242,11 +218,9 @@ function verifyAdmin(req, res, next) {
     }
 
     req.admin = decoded;
-
     next();
   } catch (error) {
     console.error("❌ Admin Authentication Error:", error.message);
-
     return res.status(401).json({
       success: false,
       error: "Invalid or expired admin session.",
@@ -260,40 +234,31 @@ function verifyAdmin(req, res, next) {
 app.post(
   ["/api/admissions", "/admissions"],
   upload.single("profilePicture"),
-
   async (req, res) => {
     try {
       console.log("");
       console.log("====================================");
       console.log("📥 NEW ADMISSION REQUEST");
       console.log("====================================");
-
       console.log("📦 Form Data:", req.body);
       console.log("📸 Uploaded File:", req.file);
 
-      // Check profile picture
       if (!req.file) {
         console.log("❌ No profile picture received.");
-
         return res.status(400).json({
           success: false,
           error: "Profile picture is required.",
         });
       }
 
-      // Check MongoDB connection
       if (mongoose.connection.readyState !== 1) {
         console.error("❌ MongoDB is not connected.");
-
         return res.status(503).json({
           success: false,
           error: "Database is not connected.",
         });
       }
 
-      // ======================
-      // Create Admission
-      // ======================
       const newAdmission = new Admission({
         name: req.body.name,
         fatherName: req.body.fatherName,
@@ -309,25 +274,20 @@ app.post(
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
-        profilePicture: req.file.filename,
-        status: "Pending", // Set default status on new admission
+        profilePicture: req.file.path, // FIXED HERE ✅
+        status: "Pending",
       });
 
-      // ======================
-      // Save to MongoDB
-      // ======================
       const savedAdmission = await newAdmission.save();
 
       console.log("");
       console.log("====================================");
       console.log("✅ ADMISSION SAVED SUCCESSFULLY!");
       console.log("====================================");
-
       console.log("🆔 Admission ID:", savedAdmission._id);
       console.log("📚 Collection:", Admission.collection.name);
       console.log("🗄️ Database:", mongoose.connection.name);
       console.log("📧 Email:", savedAdmission.email);
-
       console.log("====================================");
       console.log("");
 
@@ -343,7 +303,6 @@ app.post(
       console.error("====================================");
       console.error(error);
       console.error("====================================");
-
       return res.status(500).json({
         success: false,
         error: "Failed to submit application.",
@@ -359,7 +318,6 @@ app.post(
 app.get("/api/admissions/count", async (req, res) => {
   try {
     const count = await Admission.countDocuments();
-
     res.json({
       success: true,
       count: count,
@@ -368,7 +326,6 @@ app.get("/api/admissions/count", async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Admission count error:", error);
-
     res.status(500).json({
       success: false,
       error: error.message,
@@ -382,7 +339,6 @@ app.get("/api/admissions/count", async (req, res) => {
 app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
   try {
     const admissions = await Admission.find().sort({ createdAt: -1 }).lean();
-
     return res.json({
       success: true,
       count: admissions.length,
@@ -390,7 +346,6 @@ app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Get Admissions Error:", error);
-
     return res.status(500).json({
       success: false,
       error: "Failed to fetch admissions.",
@@ -399,9 +354,6 @@ app.get("/api/admin/admissions", verifyAdmin, async (req, res) => {
   }
 });
 
-// ==================================================
-// 🔐 ADMIN - UPDATE ADMISSION STATUS (NEW ROUTE)
-// ==================================================
 // ==================================================
 // 🔐 ADMIN - UPDATE ADMISSION STATUS (+ auto student)
 // ==================================================
@@ -430,7 +382,6 @@ app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
     let studentId = null;
 
     if (status === "Accepted") {
-      // Duplicate protection: only create if no student exists for this admission
       const existingStudent = await Student.findOne({
         admissionId: admission._id,
       });
@@ -452,7 +403,7 @@ app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
           occupation: admission.occupation,
           occupationOther: admission.occupationOther,
           studiedKoreanBefore: admission.studiedKoreanBefore,
-          profilePicture: admission.profilePicture,
+          profilePicture: admission.profilePicture, // Uses Cloudinary URL
           admissionDate: admission.createdAt,
           status: "Active",
           totalFee: getCourseFee(admission.course),
@@ -489,6 +440,7 @@ app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
     });
   }
 });
+
 // ==================================================
 // 🎓 ADMIN - STUDENT MANAGEMENT
 // ==================================================
@@ -524,7 +476,7 @@ app.get("/api/admin/students/:id", verifyAdmin, async (req, res) => {
   }
 });
 
-// CREATE student (manual) - accepts multipart with optional profilePicture
+// CREATE student (manual)
 app.post(
   "/api/admin/students",
   verifyAdmin,
@@ -554,7 +506,7 @@ app.post(
         occupation: b.occupation || "",
         occupationOther: b.occupationOther || "",
         studiedKoreanBefore: b.studiedKoreanBefore || "",
-        profilePicture: req.file ? req.file.filename : "",
+        profilePicture: req.file ? req.file.path : "", // ALREADY FIXED BY YOU ✅
         courseDuration: b.courseDuration || "",
         customDuration: b.customDuration || "",
         joiningDate: b.joiningDate || null,
@@ -585,7 +537,7 @@ app.post(
   },
 );
 
-// UPDATE student (accepts JSON or multipart for photo)
+// UPDATE student
 app.put(
   "/api/admin/students/:id",
   verifyAdmin,
@@ -631,7 +583,9 @@ app.put(
       if (b.lastDay !== undefined) student.lastDay = b.lastDay || null;
       if (b.book !== undefined)
         student.book = { ...student.book?.toObject?.(), ...b.book };
-      if (req.file) student.profilePicture = req.file.filename;
+
+      // FIXED HERE ✅
+      if (req.file) student.profilePicture = req.file.path;
 
       await student.save();
 
@@ -849,6 +803,7 @@ app.get("/api/admin/contacts", verifyAdmin, async (req, res) => {
     });
   }
 });
+
 // ==================================================
 // 🔐 ADMIN - DELETE ADMISSION
 // ==================================================
@@ -863,13 +818,7 @@ app.delete("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
       });
     }
 
-    // Optional: Server se profile picture bhi delete kar dein agar mojood ho
-    if (admission.profilePicture) {
-      const filePath = path.join(uploadDirectory, admission.profilePicture);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
+    // FIXED HERE ✅ (Removed local fs.unlinkSync logic to prevent crash)
 
     console.log(`🗑️ Deleted admission: ${req.params.id}`);
 
@@ -914,6 +863,7 @@ app.delete("/api/admin/contacts/:id", verifyAdmin, async (req, res) => {
     });
   }
 });
+
 // ======================
 // 404 Handler
 // ======================
