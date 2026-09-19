@@ -877,53 +877,45 @@ app.use((req, res) => {
 // ==================================================
 // MongoDB Connection + Start Server
 // ==================================================
-async function startServer() {
-  try {
-    if (!process.env.MONGO_URI) {
-      console.error("❌ MONGO_URI is not defined!");
-      process.exit(1);
-    }
+// 🛠️ RENDER TIMEOUT FIX APPLIED HERE:
+// Start the Express server first, THEN connect to MongoDB.
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 
-    if (!process.env.JWT_SECRET) {
-      console.error("❌ JWT_SECRET is not defined!");
-      process.exit(1);
-    }
-
-    if (!process.env.ADMIN_USERNAME) {
-      console.error("❌ ADMIN_USERNAME is not defined!");
-      process.exit(1);
-    }
-
-    if (!process.env.ADMIN_PASSWORD) {
-      console.error("❌ ADMIN_PASSWORD is not defined!");
-      process.exit(1);
-    }
-
-    await mongoose.connect(process.env.MONGO_URI, {
-      dbName: "hk_korean",
-    });
-
-    console.log("");
-    console.log("====================================");
-    console.log("✅ MongoDB Connected Successfully!");
-    console.log("🗄️ Database:", mongoose.connection.name);
-    console.log("🌐 Host:", mongoose.connection.host);
-    console.log("====================================");
-    console.log("");
-
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("");
-    console.error("====================================");
-    console.error("❌ MongoDB Connection Error");
-    console.error("====================================");
-    console.error(error);
-    console.error("====================================");
-
-    process.exit(1);
+  // Check required environment variables
+  if (
+    !process.env.MONGO_URI ||
+    !process.env.JWT_SECRET ||
+    !process.env.ADMIN_USERNAME ||
+    !process.env.ADMIN_PASSWORD
+  ) {
+    console.error(
+      "❌ Missing required environment variables! Check Render dashboard.",
+    );
   }
-}
 
-startServer();
+  // Connect to MongoDB asynchronously
+  if (process.env.MONGO_URI) {
+    mongoose
+      .connect(process.env.MONGO_URI, {
+        dbName: "hk_korean",
+        serverSelectionTimeoutMS: 5000,
+      })
+      .then(() => {
+        console.log("");
+        console.log("====================================");
+        console.log("✅ MongoDB Connected Successfully!");
+        console.log("🗄️ Database:", mongoose.connection.name);
+        console.log("🌐 Host:", mongoose.connection.host);
+        console.log("====================================");
+        console.log("");
+      })
+      .catch((error) => {
+        console.error("");
+        console.error("====================================");
+        console.error("❌ MongoDB Connection Error");
+        console.error("====================================");
+        console.error(error);
+      });
+  }
+});
