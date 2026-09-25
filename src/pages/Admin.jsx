@@ -181,7 +181,6 @@ function Admin() {
   ];
 
   // Helper function to safely get Image URL
-  // Helper function to safely get Image URL
   const getValidImageUrl = (picPath) => {
     if (!picPath) return "";
     if (picPath.startsWith("http")) return picPath;
@@ -474,6 +473,15 @@ function Admin() {
                                               admission.createdAt,
                                             ).toLocaleDateString()
                                           : "Unknown"}
+                                      </p>
+                                    </div>
+                                    {/* 🏫 Class Mode — ✅ NAYA FIELD */}
+                                    <div>
+                                      <p className="text-gray-400 mb-1">
+                                        Class Mode
+                                      </p>
+                                      <p className="font-medium text-navy dark:text-white">
+                                        {admission.classMode || "—"}
                                       </p>
                                     </div>
                                     <div>

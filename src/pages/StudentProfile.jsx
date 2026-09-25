@@ -48,7 +48,6 @@ function StudentProfile() {
   const [toast, setToast] = useState(null);
   const [savingSection, setSavingSection] = useState("");
 
-  // ✅ YEH LINE TOP PAR MOVE KI GAYI HAI (pehle neeche thi jo error de rahi thi)
   const [customCourse, setCustomCourse] = useState(false);
 
   const [statusDraft, setStatusDraft] = useState("Active");
@@ -56,6 +55,7 @@ function StudentProfile() {
     course: "",
     courseDuration: "",
     customDuration: "",
+    classMode: "Physical", // ✅ NAYA FIELD
     joiningDate: "",
     lastDay: "",
   });
@@ -121,6 +121,7 @@ function StudentProfile() {
       course: s.course || "",
       courseDuration: s.courseDuration || "",
       customDuration: s.customDuration || "",
+      classMode: s.classMode || "Physical", // ✅ NAYA FIELD
       joiningDate: toDateInput(s.joiningDate),
       lastDay: toDateInput(s.lastDay),
     });
@@ -361,6 +362,11 @@ function StudentProfile() {
                   {student.course}
                 </span>
               )}
+              {student.classMode && (
+                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">
+                  {student.classMode}
+                </span>
+              )}
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold ${student.status === "Active" ? "bg-green-100 text-green-700" : student.status === "Completed" ? "bg-blue-100 text-blue-700" : student.status === "Dropped" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}
               >
@@ -440,6 +446,7 @@ function StudentProfile() {
                 ["Phone", student.phone || "—"],
                 ["Occupation", student.occupation || "—"],
                 ["Studied Korean Before", student.studiedKoreanBefore || "—"],
+                ["Class Mode", student.classMode || "—"],
                 ["Address", student.address || "—"],
               ].map(([label, value], i) => (
                 <div key={i}>
@@ -515,6 +522,22 @@ function StudentProfile() {
                   </p>
                 )}
               </div>
+
+              {/* 🏫 Class Mode — ✅ NAYA FIELD */}
+              <div>
+                <label className={labelClass}>Class Mode</label>
+                <select
+                  value={courseForm.classMode}
+                  onChange={(e) =>
+                    setCourseForm((p) => ({ ...p, classMode: e.target.value }))
+                  }
+                  className={inputClass}
+                >
+                  <option value="Physical">Physical (On-Campus)</option>
+                  <option value="Online">Online</option>
+                </select>
+              </div>
+
               <div>
                 <label className={labelClass}>Course Duration</label>
                 <select

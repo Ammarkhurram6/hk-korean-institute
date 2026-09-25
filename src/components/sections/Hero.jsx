@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import seoulImg from "../../assets/images/background.jpg";
 
 const phrases = [
   "Learn Korean",
@@ -46,7 +47,7 @@ const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.pexels.com/photos/34860711/pexels-photo-34860711.jpeg"
+          src={seoulImg}
           alt="Seoul Skyline"
           className="w-full h-full object-cover"
         />

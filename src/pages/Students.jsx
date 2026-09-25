@@ -476,6 +476,7 @@ function AddStudentModal({ onClose, onCreated }) {
     course: "",
     occupation: "",
     studiedKoreanBefore: "No",
+    classMode: "Physical", // ✅ NAYA FIELD
     courseDuration: "",
     customDuration: "",
     joiningDate: "",
@@ -789,6 +790,21 @@ function AddStudentModal({ onClose, onCreated }) {
               >
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
+              </select>
+            </div>
+            {/* 🏫 Class Mode — ✅ NAYA FIELD */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
+                Class Mode
+              </label>
+              <select
+                name="classMode"
+                value={form.classMode}
+                onChange={handleChange}
+                className={inputClass}
+              >
+                <option value="Physical">Physical (On-Campus)</option>
+                <option value="Online">Online</option>
               </select>
             </div>
             <div>

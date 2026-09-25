@@ -12,6 +12,7 @@ const admissionSchema = new mongoose.Schema({
   occupation: { type: String, required: true },
   occupationOther: { type: String }, // Optional, only if 'Other' is selected
   studiedKoreanBefore: { type: String, required: true },
+  classMode: { type: String, default: "Physical" }, // Physical or Online
   email: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },

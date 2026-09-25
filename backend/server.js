@@ -35,6 +35,7 @@ const COURSE_FEES = {
   "TOPIK 1": 15000,
   "Basic Korean Language": 25000,
   "Fast-Track Korean (40 Days)": 20000,
+  "Free Short Course": 1000,
 };
 
 function getCourseFee(courseName) {
@@ -271,10 +272,11 @@ app.post(
         occupation: req.body.occupation,
         occupationOther: req.body.occupationOther,
         studiedKoreanBefore: req.body.studiedKoreanBefore,
+        classMode: req.body.classMode || "Physical", // ✅ NAYA FIELD
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
-        profilePicture: req.file.path, // FIXED HERE ✅
+        profilePicture: req.file.path,
         status: "Pending",
       });
 
@@ -403,6 +405,7 @@ app.patch("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
           occupation: admission.occupation,
           occupationOther: admission.occupationOther,
           studiedKoreanBefore: admission.studiedKoreanBefore,
+          classMode: admission.classMode || "Physical", // ✅ NAYA FIELD
           profilePicture: admission.profilePicture, // Uses Cloudinary URL
           admissionDate: admission.createdAt,
           status: "Active",
@@ -506,7 +509,8 @@ app.post(
         occupation: b.occupation || "",
         occupationOther: b.occupationOther || "",
         studiedKoreanBefore: b.studiedKoreanBefore || "",
-        profilePicture: req.file ? req.file.path : "", // ALREADY FIXED BY YOU ✅
+        classMode: b.classMode || "Physical", // ✅ NAYA FIELD
+        profilePicture: req.file ? req.file.path : "",
         courseDuration: b.courseDuration || "",
         customDuration: b.customDuration || "",
         joiningDate: b.joiningDate || null,
@@ -568,6 +572,7 @@ app.put(
         "occupation",
         "occupationOther",
         "studiedKoreanBefore",
+        "classMode", // ✅ NAYA FIELD
         "courseDuration",
         "customDuration",
         "status",
@@ -584,7 +589,6 @@ app.put(
       if (b.book !== undefined)
         student.book = { ...student.book?.toObject?.(), ...b.book };
 
-      // FIXED HERE ✅
       if (req.file) student.profilePicture = req.file.path;
 
       await student.save();
@@ -818,8 +822,6 @@ app.delete("/api/admin/admissions/:id", verifyAdmin, async (req, res) => {
       });
     }
 
-    // FIXED HERE ✅ (Removed local fs.unlinkSync logic to prevent crash)
-
     console.log(`🗑️ Deleted admission: ${req.params.id}`);
 
     return res.json({
@@ -877,8 +879,7 @@ app.use((req, res) => {
 // ==================================================
 // MongoDB Connection + Start Server
 // ==================================================
-// 🛠️ RENDER TIMEOUT FIX APPLIED HERE:
-// Start the Express server first, THEN connect to MongoDB.
+// 🛠️ RENDER TIMEOUT FIX: Start the Express server first, THEN connect to MongoDB.
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 

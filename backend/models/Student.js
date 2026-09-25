@@ -6,7 +6,7 @@ const PaymentSchema = new mongoose.Schema(
     date: { type: Date, default: Date.now },
     details: { type: String, default: "" },
   },
-  { _id: true }
+  { _id: true },
 );
 
 const BookSchema = new mongoose.Schema(
@@ -23,7 +23,7 @@ const BookSchema = new mongoose.Schema(
     },
     details: { type: String, default: "" },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const StudentSchema = new mongoose.Schema(
@@ -37,7 +37,11 @@ const StudentSchema = new mongoose.Schema(
       sparse: true,
       default: null,
     },
-    name: { type: String, required: [true, "Student name is required"], trim: true },
+    name: {
+      type: String,
+      required: [true, "Student name is required"],
+      trim: true,
+    },
     fatherName: { type: String, default: "" },
     dob: { type: String, default: "" },
     age: { type: String, default: "" },
@@ -51,6 +55,7 @@ const StudentSchema = new mongoose.Schema(
     occupation: { type: String, default: "" },
     occupationOther: { type: String, default: "" },
     studiedKoreanBefore: { type: String, default: "" },
+    classMode: { type: String, default: "Physical" }, // Physical or Online
     profilePicture: { type: String, default: "" },
     admissionDate: { type: Date, default: null },
     courseDuration: { type: String, default: "" },
@@ -67,7 +72,7 @@ const StudentSchema = new mongoose.Schema(
     book: { type: BookSchema, default: () => ({}) },
     notes: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Student", StudentSchema);

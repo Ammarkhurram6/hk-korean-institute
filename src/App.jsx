@@ -13,6 +13,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
 import Students from "./pages/Students";
 import StudentProfile from "./pages/StudentProfile";
+import PromoPopup from "./components/PromoPopup";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -49,9 +50,6 @@ function App() {
 
                 {/* Admin */}
                 <Route path="/admin/login" element={<AdminLogin />} />
-
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/students" element={<Students />} />
                 <Route
@@ -65,6 +63,9 @@ function App() {
           {!isAdminPage && <Footer />}
 
           {!isAdminPage && <FloatingButtons />}
+
+          {/* Promo Popup — sirf public pages par dikhega, admin par nahi */}
+          {!isAdminPage && <PromoPopup />}
         </div>
       )}
     </>

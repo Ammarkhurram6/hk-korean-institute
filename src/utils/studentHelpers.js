@@ -103,6 +103,7 @@ export const COURSE_FEES = {
   "TOPIK 1": 15000,
   "Basic Korean Language": 25000,
   "Fast-Track Korean (40 Days)": 20000,
+  "Free Short Course": 1000,
 };
 
 // Course name se fee nikalne ka helper (fuzzy match bhi karta hai)

@@ -15,6 +15,7 @@ function Admission() {
     occupation: "",
     occupationOther: "",
     studiedKoreanBefore: "",
+    classMode: "Physical", // ✅ NAYA FIELD
     email: "",
     phone: "",
     address: "",
@@ -124,6 +125,7 @@ function Admission() {
           occupation: "",
           occupationOther: "",
           studiedKoreanBefore: "",
+          classMode: "Physical", // ✅ NAYA FIELD (reset par bhi)
           email: "",
           phone: "",
           address: "",
@@ -399,6 +401,9 @@ function Admission() {
               >
                 Fast-Track Korean (40 Days)
               </option>
+              <option value="Free Short Course" className="dark:bg-[#111c34]">
+                Free Short Course
+              </option>
               <option
                 value="TOPIK 2"
                 disabled
@@ -523,6 +528,43 @@ function Admission() {
                 />
                 <span className="ml-2 text-gray-900 dark:text-white font-medium">
                   No
+                </span>
+              </label>
+            </div>
+          </div>
+
+          {/* 🏫 Class Mode — ✅ NAYA SECTION */}
+          <div className="col-span-1 md:col-span-2 bg-gray-50 dark:bg-black/20 p-4 rounded-lg border border-gray-300 dark:border-white/20">
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+              How would you like to take class?
+            </label>
+            <div className="flex gap-6 flex-wrap">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="classMode"
+                  value="Physical"
+                  checked={formData.classMode === "Physical"}
+                  required
+                  onChange={handleChange}
+                  className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
+                />
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  Physical (On-Campus)
+                </span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="classMode"
+                  value="Online"
+                  checked={formData.classMode === "Online"}
+                  required
+                  onChange={handleChange}
+                  className="w-5 h-5 text-red-600 border-gray-400 focus:ring-red-500"
+                />
+                <span className="ml-2 text-gray-900 dark:text-white font-medium">
+                  Online
                 </span>
               </label>
             </div>
