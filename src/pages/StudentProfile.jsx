@@ -31,6 +31,7 @@ import {
   getCourseFee,
   COURSE_FEES,
 } from "../utils/studentHelpers";
+import html2pdf from "html2pdf.js";
 
 const inputClass =
   "w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-navy dark:text-white outline-none focus:ring-2 focus:ring-kred transition-all";
@@ -283,7 +284,18 @@ function StudentProfile() {
       showToast("error", err.message);
     }
   };
-
+  const generateInstallmentVoucher = () => {
+    const element = document.getElementById("installment-voucher");
+    const opt = {
+      margin: 0.5,
+      filename: `${student.name}_Remaining_Dues.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+    html2pdf().set(opt).from(element).save();
+    showToast("success", "Installment voucher downloading...");
+  };
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-lightgray dark:bg-charcoal text-navy dark:text-white">
@@ -627,16 +639,44 @@ function StudentProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-kred/10 text-kred flex items-center justify-center">
-              <FiDollarSign />
+          {/* ✅ FEES & PAYMENTS SECTION HEADER AUR BUTTONS */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-kred/10 text-kred flex items-center justify-center">
+                <FiDollarSign />
+              </div>
+              <h3 className="text-xl font-bold text-navy dark:text-white">
+                Fees & Payments
+              </h3>
             </div>
-            <h3 className="text-xl font-bold text-navy dark:text-white">
-              Fees & Payments
-            </h3>
+
+            <div className="flex flex-wrap gap-3">
+              {/* 👇 2nd Installment Voucher Button (Sirf tab dikhega jab Remaining Fee 0 se zyada ho) 👇 */}
+              {remaining > 0 && (
+                <button
+                  onClick={generateInstallmentVoucher}
+                  className="flex items-center gap-2 bg-purple-50 text-purple-600 hover:bg-purple-100 px-4 py-2 rounded-lg text-sm font-bold border border-purple-200 transition-all shadow-sm"
+                >
+                  📄 Generate Dues Voucher
+                </button>
+              )}
+
+              {/* 👇 Receipt Show Karne Wala Button 👇 */}
+              {student.feeReceipt && (
+                <a
+                  href={student.feeReceipt}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-bold border border-blue-200 transition-all shadow-sm"
+                >
+                  🧾 View Uploaded Voucher
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Fee Summary */}
+          {/* (Yahan aapka pehle wala Total Fee, Total Paid, Remaining Fee wala grid code wasay hi rahega[cite: 9]) */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4">
               <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
@@ -1029,6 +1069,95 @@ function StudentProfile() {
           </button>
         </motion.section>
       </main>
+      {/* 🖨️ HIDDEN VOUCHER FOR PDF GENERATION */}
+      {student && remaining > 0 && (
+        <div style={{ display: "none" }}>
+          <div
+            id="installment-voucher"
+            className="bg-white text-black p-6 rounded-lg w-full border-t-8 border-purple-600 font-sans"
+            style={{ width: "700px" }}
+          >
+            <div className="flex justify-between items-center border-b-2 pb-4 mb-6 border-gray-200">
+              <div>
+                <h1 className="text-3xl font-bold text-purple-600">
+                  HK Institute
+                </h1>
+                <p className="text-gray-500 font-medium text-lg">
+                  2nd Installment / Remaining Dues
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-sm">
+                  Date: {new Date().toLocaleDateString()}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">Valid for 7 days</p>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <h2 className="text-lg font-bold mb-3 bg-gray-100 p-2 rounded">
+                Student Details
+              </h2>
+              <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
+                <p>
+                  <span className="font-semibold text-gray-600">Name:</span>{" "}
+                  {student.name}
+                </p>
+                <p>
+                  <span className="font-semibold text-gray-600">
+                    Father's Name:
+                  </span>{" "}
+                  {student.fatherName}
+                </p>
+                <p>
+                  <span className="font-semibold text-gray-600">Course:</span>{" "}
+                  {student.course}
+                </p>
+                <p>
+                  <span className="font-semibold text-gray-600">Phone:</span>{" "}
+                  {student.phone}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-6 border-2 border-gray-100 rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-center text-lg">
+                <p className="font-bold text-gray-700">Remaining Dues:</p>
+                <p className="font-bold text-2xl text-purple-600">
+                  {formatPKR(remaining)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-6 bg-purple-50 border-l-4 border-purple-600 p-4 rounded text-purple-900">
+              <h3 className="font-bold mb-2">Payment Instructions</h3>
+              <p className="text-sm mb-3">
+                Please transfer the remaining dues to the following bank account
+                and share the receipt on WhatsApp.
+              </p>
+              <div className="space-y-1 text-base">
+                <p>
+                  <span className="font-semibold">Bank Name:</span> Meezan Bank
+                </p>
+                <p>
+                  <span className="font-semibold">Account Title:</span> Hammad
+                  Ahmed
+                </p>
+                <p className="text-lg mt-1">
+                  <span className="font-semibold">Account Number:</span>{" "}
+                  <span className="font-bold tracking-widest text-black">
+                    02760111079336
+                  </span>
+                </p>
+              </div>
+            </div>
+            <p className="text-center text-xs text-gray-400 mt-8">
+              This is a computer-generated voucher and does not require a
+              signature.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Toast Notifications */}
       <AnimatePresence>

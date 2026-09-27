@@ -57,6 +57,9 @@ const StudentSchema = new mongoose.Schema(
     studiedKoreanBefore: { type: String, default: "" },
     classMode: { type: String, default: "Physical" }, // Physical or Online
     profilePicture: { type: String, default: "" },
+
+    feeReceipt: { type: String, default: "" }, // ✅ NAYA FIELD YAHAN ADD HO GAYA HAI
+
     admissionDate: { type: Date, default: null },
     courseDuration: { type: String, default: "" },
     customDuration: { type: String, default: "" },

@@ -229,7 +229,6 @@ function verifyAdmin(req, res, next) {
   }
 }
 
-// ==================================================
 // 📥 ADMISSION SUBMISSION
 // ==================================================
 app.post(
@@ -260,6 +259,8 @@ app.post(
         });
       }
 
+      // ❌ Duplicate validation yahan se remove kar di gayi hai ❌
+
       const newAdmission = new Admission({
         name: req.body.name,
         fatherName: req.body.fatherName,
@@ -272,7 +273,7 @@ app.post(
         occupation: req.body.occupation,
         occupationOther: req.body.occupationOther,
         studiedKoreanBefore: req.body.studiedKoreanBefore,
-        classMode: req.body.classMode || "Physical", // ✅ NAYA FIELD
+        classMode: req.body.classMode || "Physical",
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
@@ -310,6 +311,84 @@ app.post(
         error: "Failed to submit application.",
         details: error.message,
       });
+    }
+  },
+);
+// ==================================================
+// 📤 UPLOAD FEE RECEIPT & AUTO-ACCEPT ADMISSION
+// ==================================================
+app.post(
+  "/api/admissions/:id/receipt",
+  upload.single("feeReceipt"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Receipt image is required." });
+      }
+
+      const admission = await Admission.findById(req.params.id);
+      if (!admission) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Admission record not found." });
+      }
+
+      // 1. Receipt save karein aur status auto-accept karein
+      admission.feeReceipt = req.file.path;
+      admission.paymentStatus = "Pending Verification";
+      admission.status = "Accepted"; // ✅ AUTO ACCEPT
+      await admission.save();
+
+      // 2. Automatically Student Record Create karein
+      const existingStudent = await Student.findOne({
+        admissionId: admission._id,
+      });
+
+      if (!existingStudent) {
+        const newStudent = new Student({
+          admissionId: admission._id,
+          name: admission.name,
+          fatherName: admission.fatherName,
+          dob: admission.dob,
+          age: admission.age,
+          gender: admission.gender,
+          identityType: admission.identityType,
+          identityNumber: admission.identityNumber,
+          email: admission.email,
+          phone: admission.phone,
+          address: admission.address,
+          course: admission.course,
+          occupation: admission.occupation,
+          occupationOther: admission.occupationOther,
+          studiedKoreanBefore: admission.studiedKoreanBefore,
+          classMode: admission.classMode || "Physical",
+          profilePicture: admission.profilePicture,
+          feeReceipt: req.file.path, // ✅ RECEIPT LINK STUDENT MEIN BHI BHEJ DIYA
+          admissionDate: admission.createdAt,
+          status: "Active",
+          totalFee: getCourseFee(admission.course),
+          payments: [],
+        });
+
+        await newStudent.save();
+        console.log(
+          "🎓 Student auto-created via Receipt Upload:",
+          admission.name,
+        );
+      }
+
+      return res.json({
+        success: true,
+        message: "Receipt uploaded and admission automatically accepted!",
+        feeReceipt: admission.feeReceipt,
+      });
+    } catch (error) {
+      console.error("❌ Upload Receipt Error:", error);
+      return res
+        .status(500)
+        .json({ success: false, error: "Failed to upload receipt." });
     }
   },
 );
