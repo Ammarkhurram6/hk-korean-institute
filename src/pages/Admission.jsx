@@ -452,7 +452,7 @@ function Admission() {
             </div>
             <div className="text-center">
               <label className="cursor-pointer px-4 py-2 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white font-medium rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition text-sm shadow-sm border border-gray-300 dark:border-white/20 flex flex-col items-center">
-                <span>Upload Passport Photo</span>
+                <span>Upload Profile Picture</span>
                 <span className="text-xs text-red-600 dark:text-red-400 font-semibold mt-1">
                   JPG/JPEG only, Max 150KB
                 </span>
