@@ -21,6 +21,7 @@ import {
   getPhotoUrl,
   getFeeStatus,
   getRemainingFee,
+  getTotalPaid,
   formatPKR,
   formatPKRCompact,
   DURATION_OPTIONS,
@@ -157,11 +158,7 @@ function Students() {
   const pendingFeesCount = students.filter(
     (s) => getFeeStatus(s) !== "Paid",
   ).length;
-  const totalOutstanding = students.reduce(
-    (sum, s) => sum + getRemainingFee(s),
-    0,
-  );
-
+  const totalCollected = students.reduce((sum, s) => sum + getTotalPaid(s), 0);
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-lightgray dark:bg-charcoal text-navy dark:text-white">
@@ -238,13 +235,20 @@ function Students() {
               color: "bg-yellow-100 text-yellow-600",
               eye: false,
             },
+            // {
+            //   icon: <FiDollarSign />,
+            //   label: "Outstanding",
+            //   value: showFees
+            //     ? formatPKRCompact(totalOutstanding)
+            //     : "PKR *****",
+            //   color: "bg-kred/10 text-kred",
+            //   eye: true,
+            // },
             {
               icon: <FiDollarSign />,
-              label: "Outstanding",
-              value: showFees
-                ? formatPKRCompact(totalOutstanding)
-                : "PKR *****",
-              color: "bg-kred/10 text-kred",
+              label: "Total Received",
+              value: showFees ? formatPKRCompact(totalCollected) : "PKR *****",
+              color: "bg-green-100 text-green-600",
               eye: true,
             },
           ].map((card, i) => (

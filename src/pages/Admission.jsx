@@ -406,7 +406,7 @@ function Admission() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
-        className="max-w-4xl mx-auto my-28 p-8 bg-white dark:bg-[#111c34] text-navy dark:text-white rounded-3xl shadow-2xl border border-gray-100 dark:border-white/15 transition-colors"
+        className="max-w-4xl mx-auto my-28 p-8 bg-white dark:bg-white/[0.03] dark:backdrop-blur-2xl text-navy dark:text-gray-100 rounded-3xl shadow-2xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-white/10 transition-colors"
       >
         <div className="text-center mb-8">
           <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 dark:from-red-500 dark:to-red-400">
@@ -478,7 +478,7 @@ function Admission() {
                 value={formData.name}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
                 placeholder="e.g. Ali Khan"
               />
             </div>
@@ -493,7 +493,7 @@ function Admission() {
                 value={formData.fatherName}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               />
             </div>
 
@@ -508,7 +508,7 @@ function Admission() {
                   value={formData.dob}
                   required
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                  className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
                 />
               </div>
               <div className="w-24">
@@ -534,7 +534,7 @@ function Admission() {
                 value={formData.gender}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               >
                 <option value="" className="dark:bg-[#111c34]">
                   Select Gender...
@@ -626,7 +626,7 @@ function Admission() {
                 value={formData.course}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               >
                 <option value="" className="dark:bg-[#111c34]">
                   Select a Course...
@@ -672,7 +672,7 @@ function Admission() {
                 value={formData.email}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               />
             </div>
 
@@ -686,7 +686,7 @@ function Admission() {
                 value={formData.phone}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               />
             </div>
 
@@ -699,7 +699,7 @@ function Admission() {
                 value={formData.occupation}
                 required
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+                className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
               >
                 <option value="" className="dark:bg-[#111c34]">
                   Select Occupation...
@@ -823,7 +823,7 @@ function Admission() {
               value={formData.address}
               required
               onChange={handleChange}
-              className="w-full rounded-lg border border-gray-300 dark:border-white/20 shadow-sm focus:border-red-500 focus:ring-red-500 p-3 bg-gray-50 dark:bg-black/30 text-gray-900 dark:text-white outline-none"
+              className="w-full rounded-xl border border-gray-300 dark:border-white/10 shadow-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 p-3.5 bg-gray-50 dark:bg-black/20 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all"
             ></textarea>
           </div>
 

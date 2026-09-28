@@ -6,7 +6,7 @@
   body {
     font-family: "Poppins", sans-serif;
     background-color: #ffffff;
-    color: #1a1a1a; /* charcoal */
+    color: #1a1a1a;
     transition:
       background-color 0.3s,
       color 0.3s;
@@ -15,11 +15,27 @@
     overflow-x: hidden;
   }
 
-  /* Dark mode standard CSS */
+  /* ============================================
+     🔥 PREMIUM OBSIDIAN EMBER DARK THEME
+     Warm black — ZERO blue
+     ============================================ */
   html.dark body {
-    background-color: #1a1a1a; /* charcoal */
-    color: #ffffff;
+    background-color: #0b0a08;
+    color: #f5f1eb;
     overflow-x: hidden;
+    /* Ember glow top + warm depth bottom */
+    background-image:
+      radial-gradient(
+        ellipse 80% 45% at 50% -15%,
+        rgba(205, 46, 58, 0.13),
+        transparent
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 110% 110%,
+        rgba(232, 89, 58, 0.06),
+        transparent
+      );
+    background-attachment: fixed;
   }
 
   h1,
@@ -44,9 +60,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
+  /* 🔥 Warm frosted glass in dark */
   html.dark .glass-card {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   }
 
   .btn-primary {
@@ -54,7 +72,7 @@
     overflow: hidden;
     padding: 0.75rem 2rem;
     border-radius: 9999px;
-    background-color: #cd2e3a; /* kred */
+    background-color: #cd2e3a;
     color: #ffffff;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -64,7 +82,7 @@
 
   .btn-primary:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(205, 46, 58, 0.4);
+    box-shadow: 0 10px 30px rgba(205, 46, 58, 0.45);
   }
 
   .btn-secondary {
@@ -72,12 +90,23 @@
     overflow: hidden;
     padding: 0.75rem 2rem;
     border-radius: 9999px;
-    background-color: #0a1f44; /* navy */
+    background-color: #0a1f44;
     color: #ffffff;
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(10, 31, 68, 0.2);
     display: inline-block;
+  }
+
+  html.dark .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+  }
+
+  html.dark .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
 
   .btn-secondary:hover {
@@ -86,7 +115,7 @@
   }
 
   .gradient-text {
-    background-image: linear-gradient(to right, #cd2e3a, #0a1f44, #cd2e3a);
+    background-image: linear-gradient(to right, #cd2e3a, #e8593a, #cd2e3a);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -95,7 +124,53 @@
   }
 }
 
-/* Custom Scrollbar */
+/* ============================================
+   🔥 DARK MODE GLOBAL OVERRIDES
+   Saari navy/blue tinted surfaces warm ban jayengi
+   ============================================ */
+
+/* Cards & headers: dark:bg-navy/20, dark:bg-navy/80 etc → warm glass */
+html.dark [class*="dark:bg-navy"] {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+}
+
+/* Pure black footer → warm transparent */
+html.dark [class*="dark:bg-black"] {
+  background-color: transparent !important;
+}
+
+/* Purani navy-ish custom bgs → warm */
+html.dark [class*="bg-[#111c34]"],
+html.dark [class*="bg-[#0d1526]"] {
+  background-color: rgba(22, 19, 16, 0.85) !important;
+}
+
+/* Icon chips (bg-navy/10) → warm */
+html.dark .bg-navy\/10 {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Dropdown options warm dark */
+html.dark option {
+  background-color: #17140f;
+  color: #f5f1eb;
+}
+
+/* Date picker calendar bhi dark */
+html.dark [color-scheme="dark"],
+html.dark input[type="date"] {
+  color-scheme: dark;
+}
+
+/* Text selection — ember */
+html.dark ::selection {
+  background: rgba(205, 46, 58, 0.45);
+  color: #fff;
+}
+
+/* ============================================
+   🔥 WARM SCROLLBAR
+   ============================================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -107,7 +182,13 @@
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a1f44;
+  background: #e8593a;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #3d2a24;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #cd2e3a;
 }
 
 /* Swiper Customization */
